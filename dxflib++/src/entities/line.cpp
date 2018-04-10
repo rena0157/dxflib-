@@ -8,7 +8,7 @@
  * \param nl Next line
  * \return status -> 1: sucess, 0: no success
  */
-int dxflib::line_buf::parse(const std::string& cl, const std::string& nl)
+int dxflib::entities::line_buf::parse(const std::string& cl, const std::string& nl)
 {
 	using namespace group_codes;
 	// Call the entity buffer parse function first
@@ -72,7 +72,7 @@ int dxflib::line_buf::parse(const std::string& cl, const std::string& nl)
  * \brief Line buffer constructor for the line entity
  * \param lb Line Buffer
  */
-dxflib::line::line(line_buf& lb) : entity(lb), v0(lb.x0, lb.y0, lb.z0),
+dxflib::entities::line::line(line_buf& lb) : entity(lb), v0(lb.x0, lb.y0, lb.z0),
     v1(lb.x1, lb.y1, lb.z1)
 {
 	

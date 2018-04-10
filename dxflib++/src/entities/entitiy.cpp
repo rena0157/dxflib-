@@ -1,7 +1,7 @@
 #include "dxflib++/include/entities/entity.h"
 #include "dxflib++/include/utilities.h"
 
-dxflib::entity_buffer_base::~entity_buffer_base()
+dxflib::entities::entity_buffer_base::~entity_buffer_base()
 = default;
 
 /**
@@ -10,14 +10,14 @@ dxflib::entity_buffer_base::~entity_buffer_base()
  * \param nl Next line
  * \return status -> 1: sucess, 0: failure
  */
-int dxflib::entity_buffer_base::parse(const std::string& cl, const std::string& nl)
+int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std::string& nl)
 {
-	using namespace group_codes;
+	using namespace dxflib::entities::group_codes;
 	// Group code conversion
 	int code{-1};
 	try
 	{
-		if (utilities::is_number(cl))
+		if (dxflib::utilities::is_number(cl))
 			code = std::stoi(cl);
 	}
 	catch(std::invalid_argument&)
@@ -45,17 +45,25 @@ int dxflib::entity_buffer_base::parse(const std::string& cl, const std::string& 
 	case entity_codes::soft_pointer:
 		soft_pointer = nl;
 		return 1;
+	case entity_codes::color_name:
+		color_name = nl;
+		return 1;
+	case entity_codes::raw_color:
+		raw_color = std::stoi(nl);
+		return 1;
 	default:
 		return 0;
 	}
 }
 
 /**
- * \brief Entity base class constructor
- * \param eb entity buffer base struct
- */
-dxflib::entity::entity(entity_buffer_base& eb):
-	layer(eb.layer), handle(eb.handle), soft_pointer_(eb.soft_pointer)
+* \brief Entity base class constructor
+* \param eb entity buffer base struct
+*/
+dxflib::entities::entity::entity(entity_buffer_base& eb) :
+	layer(eb.layer), handle(eb.handle), soft_pointer_(eb.soft_pointer),
+	color_name_(eb.color_name), raw_color_(eb.raw_color)
 {
-
 }
+
+

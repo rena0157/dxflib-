@@ -1,9 +1,10 @@
 #include "dxflib++/include/Cadfile.h"
 #include "dxflib++/include/entities/entity.h"
+#include "dxflib++/include/entities/line.h"
+#include "dxflib++/include/entities/lwpolyline.h"
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "dxflib++/include/entities/line.h"
 
 /**
  * \brief cadfile Constructor
@@ -48,13 +49,14 @@ void dxflib::cadfile::read_file()
 void dxflib::cadfile::parse_data()
 {
 	// Loop Variables
-	entity_types current_entity{ entity_types::line }; // Current Entity
+	entities::entity_types current_entity{entities::entity_types::line }; // Current Entity
 	bool extraction_flag{ false };                     // Extraction Flag
-	const group_codes::g_common gc;                                 // Common Group Codes
-	const group_codes::g_line gl;                                   // Line Group Codes
+	const group_codes::g_common gc;                    // Common Group Codes
+	const group_codes::start_markers start_markers;    // Line Group Codes
 
 	// Buffers
-	line_buf lb; // Line Buffer
+	entities::line_buf lb;           // Line Buffer
+	entities::lwpolyline_buffer lwb; // Lwpolyline Buffer
 
 	for (int linenum{0}; linenum < static_cast<int>(data_.size()) - 1; ++linenum)
 	{
@@ -66,13 +68,19 @@ void dxflib::cadfile::parse_data()
 		 */
 		if (!extraction_flag)
 		{
-			if (cl == gl.start_marker)
+			if (cl == start_markers.line)
 			{
 				extraction_flag = true;
-				current_entity = entity_types::line;
+				current_entity = entities::entity_types::line;
+				continue;
+			}
+			if (cl == start_markers.lwpolyline)
+			{
+				extraction_flag = true;
+				current_entity = entities::entity_types::lwpolyline;
+				continue;
 			}
 		}
-
 		/*
 		 * Extraction Path
 		 */
@@ -80,13 +88,17 @@ void dxflib::cadfile::parse_data()
 		{
 			switch (current_entity)
 			{
-			case entity_types::line:
+			case entities::entity_types::line:
 				if (lb.parse(cl, nl))
+					linenum++;
+				break;
+
+			case entities::entity_types::lwpolyline:
+				if (lwb.parse(cl, nl))
 					linenum++;
 				break;
 			}
 		}
-
 		/*
 		 * Build Path
 		 */
@@ -94,8 +106,13 @@ void dxflib::cadfile::parse_data()
 		{
 			switch (current_entity)
 			{
-			case entity_types::line:
+			case entities::entity_types::line:
 				lines.emplace_back(lb);
+				extraction_flag = false;
+				break;
+
+			case entities::entity_types::lwpolyline:
+				lwpolylines.emplace_back(lwb);
 				extraction_flag = false;
 				break;
 			}

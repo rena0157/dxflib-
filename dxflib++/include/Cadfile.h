@@ -1,6 +1,7 @@
 #pragma once
+#include "dxflib++/include/entities/line.h"
+#include "dxflib++/include/entities/lwpolyline.h"
 #include <vector>
-#include "entities/line.h"
 
 namespace dxflib
 {
@@ -8,7 +9,10 @@ namespace dxflib
 	{
 	public:
 		explicit cadfile(const char* path);
-		std::vector<line> lines;
+
+		// Entities
+		std::vector<entities::line> lines;
+		std::vector<entities::lwpolyline> lwpolylines;
 
 	private:
 		void read_file();
@@ -26,9 +30,10 @@ namespace dxflib
 			const char* end_marker{ "  0" };
 		};
 
-		struct g_line
+		struct start_markers
 		{
-			const char* start_marker{ "LINE" };
+			const char* line{ "LINE" };
+			const char* lwpolyline{ "LWPOLYLINE" };
 		};
 	}
 }
