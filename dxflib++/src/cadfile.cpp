@@ -108,11 +108,13 @@ void dxflib::cadfile::parse_data()
 			{
 			case entities::entity_types::line:
 				lines.emplace_back(lb);
+				lb.free();
 				extraction_flag = false;
 				break;
 
 			case entities::entity_types::lwpolyline:
 				lwpolylines.emplace_back(lwb);
+				lwb.free();
 				extraction_flag = false;
 				break;
 			}

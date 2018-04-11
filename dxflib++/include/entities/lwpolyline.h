@@ -44,21 +44,45 @@ namespace dxflib
 
 		struct lwpolyline_buffer : entity_buffer_base
 		{
-			// Properties
+			// Geometric Properties
 			std::vector<double> x_values;
 			std::vector<double> y_values;
-			bool polyline_flag;
-			double elevation;
-			int vertex_count;
+			std::vector<double> bulge_values;
+			// Other Properties
+			bool polyline_flag{};
+			double elevation{};
+			int vertex_count{};
 
 			// Parse function override
 			int parse(const std::string& cl, const std::string& nl) override;
+			void free() override;
 		};
 
 		class lwpolyline : public entity
 		{
 		public:
+			// Properties
+			int vertex_count{};
+			bool is_closed{};
+			double elevation{};
+			std::vector<geo_line> lines;
+			
+			// Constructors
 			explicit lwpolyline(lwpolyline_buffer&);
+			
+			// Other
+			static constexpr int bulge_null{ -2 };
+
+		private:
+			/**
+			 * \brief Geoline binder takes vector of lines and creates a vector of geolines
+			 * \param x X values vector
+			 * \param y Y values vector
+			 * \param bulge Bulge values
+			 * \return a vector of geolines
+			 */
+			std::vector<geo_line> geoline_binder(const std::vector<double>& x,
+				const std::vector<double>& y, const std::vector<double>& bulge) const;
 		};
 	}
 }

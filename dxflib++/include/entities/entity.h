@@ -35,6 +35,7 @@ namespace dxflib
 			* \return Status -> 0:fail, 1:success
 			*/
 			virtual int parse(const std::string& cl, const std::string& nl);
+			virtual void free();
 		};
 
 		namespace group_codes
