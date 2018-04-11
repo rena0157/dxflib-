@@ -13,6 +13,14 @@ namespace dxflib
 		{
 			double x0, y0, z0;
 			double x1, y1, z1;
+			double thickness;
+
+			/**
+			 * \brief Parse function for line buffer
+			 * \param cl Current Line
+			 * \param nl Next Line
+			 * \return Status 1:pass, 2: fail.
+			 */
 			int parse(const std::string& cl, const std::string& nl) override;
 		};
 
@@ -37,6 +45,7 @@ namespace dxflib
 		public:
 			vertex v0;
 			vertex v1;
+			double thickness;
 			explicit line(line_buf&);
 		};
 	}

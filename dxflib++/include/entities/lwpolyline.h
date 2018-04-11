@@ -38,7 +38,10 @@ namespace dxflib
 				x_value = 10,
 				y_value = 20,
 				vertex_id = 91,
-				bulge = 42
+				bulge = 42,
+				starting_width = 40,
+				ending_width = 41,
+				width = 43
 			};
 		}
 
@@ -52,6 +55,10 @@ namespace dxflib
 			bool polyline_flag{};
 			double elevation{};
 			int vertex_count{};
+			double starting_width{};
+			double ending_width{};
+			double width{};
+
 
 			// Parse function override
 			int parse(const std::string& cl, const std::string& nl) override;
@@ -62,9 +69,14 @@ namespace dxflib
 		{
 		public:
 			// Properties
-			int vertex_count{};
-			bool is_closed{};
-			double elevation{};
+			int vertex_count;
+			bool is_closed;
+			double elevation;
+			double starting_width;
+			double ending_width;
+			double width;
+
+			// Components
 			std::vector<geo_line> lines;
 			
 			// Constructors

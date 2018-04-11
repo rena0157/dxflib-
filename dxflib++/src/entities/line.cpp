@@ -21,7 +21,7 @@ int dxflib::entities::line_buf::parse(const std::string& cl, const std::string& 
 	// Try to convert the current line to a group code
 	try
 	{
-		if (utilities::is_number(cl))
+		if (utilities::is_number(utilities::trim(cl)))
 			code = std::stoi(cl);
 	}
 	catch (std::invalid_argument&)
@@ -40,40 +40,49 @@ int dxflib::entities::line_buf::parse(const std::string& cl, const std::string& 
 	{
 	case line_codes::error:
 		return 0;
-	case line_codes::subclassmarker:
-		break;
+
 	case line_codes::thickness:
-		break;
+		thickness = std::stod(nl);
+		return 1;
+
 	case line_codes::x0:
 		x0 = std::stod(nl);
 		return 1;
+
 	case line_codes::x1:
 		x1 = std::stod(nl);
 		return 1;
+
 	case line_codes::y0:
 		y0 = std::stod(nl);
 		return 1;
+
 	case line_codes::y1:
 		y1 = std::stod(nl);
 		return 1;
+
 	case line_codes::z0:
 		z0 = std::stod(nl);
 		return 1;
+
 	case line_codes::z1:
 		z1 = std::stod(nl);
 		return 1;
+
 	default:
 		return 0;
 	}
-	return 0;
 }
 
 /**
  * \brief Line buffer constructor for the line entity
  * \param lb Line Buffer
  */
-dxflib::entities::line::line(line_buf& lb) : entity(lb), v0(lb.x0, lb.y0, lb.z0),
-    v1(lb.x1, lb.y1, lb.z1)
+dxflib::entities::line::line(line_buf& lb) : 
+	entity(lb), 
+	v0(lb.x0, lb.y0, lb.z0),
+    v1(lb.x1, lb.y1, lb.z1), 
+	thickness(lb.thickness)
 {
 	
 }

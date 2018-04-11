@@ -67,7 +67,22 @@ int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std:
 		bulge_values.push_back(std::stod(nl));
 		return 1;
 
+	case group_codes::lwpolyline::starting_width:
+		starting_width = std::stod(nl);
+		return 1;
+
+	case group_codes::lwpolyline::ending_width:
+		ending_width = std::stod(nl);
+		return 1;
+
+	case group_codes::lwpolyline::width:
+		width = std::stod(nl);
+		return 1;
+
+	case group_codes::lwpolyline::vertex_id:
 		// TODO: Add vertex_id
+		return 1;
+
 	default:
 		return 0;
 	}
@@ -88,6 +103,7 @@ void dxflib::entities::lwpolyline_buffer::free()
 
 dxflib::entities::lwpolyline::lwpolyline(lwpolyline_buffer& lwb) : entity(lwb),
 	vertex_count(lwb.vertex_count), is_closed(lwb.polyline_flag), elevation(lwb.elevation),
+	starting_width(lwb.starting_width), ending_width(lwb.ending_width), width(lwb.width),
 	lines(geoline_binder(lwb.x_values, lwb.y_values, lwb.bulge_values))
 {
 
