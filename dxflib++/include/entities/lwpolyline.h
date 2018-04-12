@@ -13,14 +13,14 @@ namespace dxflib
 		class geo_line
 		{
 		public:
-
+			static constexpr int bulge_null{ -2 };
 			/**
 			 * \brief Geometric line segment to be used as base for lwpolyline
 			 * \param v0 start vertex
 			 * \param v1 end vertex
 			 * \param bulge bulge value if arc segment
 			 */
-			explicit geo_line(const vertex& v0, const vertex& v1, double bulge=0);
+			explicit geo_line(const vertex& v0, const vertex& v1, double bulge=bulge_null);
 
 			vertex v0;
 			vertex v1;
@@ -28,6 +28,9 @@ namespace dxflib
 			double length;
 		};
 
+		/**
+		 * \brief AutoCAD LT 2013 group codes for the lwpoyline entity
+		 */
 		namespace group_codes
 		{
 			enum class lwpolyline
@@ -69,21 +72,19 @@ namespace dxflib
 		{
 		public:
 			// Properties
-			int vertex_count;
-			bool is_closed;
-			double elevation;
-			double starting_width;
-			double ending_width;
-			double width;
-
-			// Components
-			std::vector<geo_line> lines;
+			int vertex_count;            // Total number of verticies in the polyline
+			bool is_closed;              // returns true if the polyline is closed
+			double elevation;            // elevation of the polyline
+			double starting_width;       // the starting global width 
+			double ending_width;         // the ending global width
+			double width;                // the global width: only if starting width and ending width are 0
+			std::vector<geo_line> lines; // the component lines of the polyline
+			double length;               // total length of the polyline
 			
 			// Constructors
 			explicit lwpolyline(lwpolyline_buffer&);
 			
 			// Other
-			static constexpr int bulge_null{ -2 };
 
 		private:
 			/**
@@ -95,6 +96,12 @@ namespace dxflib
 			 */
 			std::vector<geo_line> geoline_binder(const std::vector<double>& x,
 				const std::vector<double>& y, const std::vector<double>& bulge) const;
+
+			/**
+			 * \brief Function that calculates the total length of the polyline
+			 * \return returns the sum of all geoline lengths
+			 */
+			double calc_length();
 		};
 	}
 }

@@ -5,7 +5,7 @@
 
 dxflib::entities::geo_line::geo_line(const vertex& v0, const vertex& v1, const double bulge):
 	v0(v0), v1(v1), bulge(bulge),
-	length(bulge == lwpolyline::bulge_null ? mathlib::distance(v0, v1) : mathlib::distance(v0, v1, bulge))
+	length(bulge == bulge_null ? mathlib::distance(v0, v1) : mathlib::distance(v0, v1, bulge))
 {
 
 }
@@ -21,7 +21,7 @@ int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std:
 	// See if the current line is a group code
 	try
 	{
-		if (utilities::is_number(utilities::trim(cl)))
+		if (utilities::is_number(utilities::ltrim_copy(cl)))
 			code = std::stoi(cl);
 	}
 	catch (std::out_of_range&)
@@ -37,7 +37,7 @@ int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std:
 	switch (static_cast<group_codes::lwpolyline>(code))
 	{
 	case group_codes::lwpolyline::x_value:
-		bulge_values.push_back(lwpolyline::bulge_null);
+		bulge_values.push_back(geo_line::bulge_null);
 		x_values.push_back(std::stod(nl));
 		return 1;
 
@@ -104,7 +104,7 @@ void dxflib::entities::lwpolyline_buffer::free()
 dxflib::entities::lwpolyline::lwpolyline(lwpolyline_buffer& lwb) : entity(lwb),
 	vertex_count(lwb.vertex_count), is_closed(lwb.polyline_flag), elevation(lwb.elevation),
 	starting_width(lwb.starting_width), ending_width(lwb.ending_width), width(lwb.width),
-	lines(geoline_binder(lwb.x_values, lwb.y_values, lwb.bulge_values))
+	lines(geoline_binder(lwb.x_values, lwb.y_values, lwb.bulge_values)), length(calc_length())
 {
 
 }
@@ -120,12 +120,27 @@ std::vector<dxflib::entities::geo_line> dxflib::entities::lwpolyline::geoline_bi
 
 	for (int pointnum{0}; pointnum < static_cast<int>(x.size()) - 1; ++pointnum)
 	{
+		const double b = bulge[pointnum];
 		const double x0 = x[pointnum];
 		const double x1 = x[pointnum + 1];
 		const double y0 = y[pointnum];
 		const double y1 = y[pointnum + 1];
-		geo_lines.emplace_back(vertex{ x0, y0 }, vertex{ x1, y1 });
+		geo_lines.emplace_back(vertex{ x0, y0 }, vertex{ x1, y1 }, b);
 	}
+	// If the line is closed create one more line that extends from the last point to 
+	// the starting point
+	if (is_closed)
+		geo_lines.emplace_back(vertex{ x[0], y[0] }, vertex{ x.back(), y.back() }, bulge.back());
 
 	return geo_lines;
+}
+
+double dxflib::entities::lwpolyline::calc_length()
+{
+	double sum{ 0 };
+
+	// iterate through all geolines and return a total length
+	for (auto& line : lines)
+		sum += line.length;
+	return sum;
 }

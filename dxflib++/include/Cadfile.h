@@ -2,6 +2,7 @@
 #include "dxflib++/include/entities/line.h"
 #include "dxflib++/include/entities/lwpolyline.h"
 #include <vector>
+#include <deque>
 
 namespace dxflib
 {

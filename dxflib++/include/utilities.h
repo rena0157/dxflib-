@@ -28,6 +28,17 @@ namespace dxflib
 		}
 
 		/**
+		 * \brief Trims string from the left
+		 * \param str string to be trimed
+		 * \return returns the trimmed string
+		 */
+		inline std::string ltrim_copy(std::string str)
+		{
+			str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](char c) {return !std::isspace(c); }));
+			return str;
+		}
+
+		/**
 		 * \brief trim the whitespace of a string from the right
 		 * \param str string reference
 		 */

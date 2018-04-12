@@ -28,6 +28,12 @@ void dxflib::cadfile::read_file()
 		fs.open(filename_);
 		if (fs.good())
 		{
+			// Preallocating memory
+			fs.seekg(0, std::istream::end);
+			const size_t size{ static_cast<size_t>(fs.tellg())/sizeof(int64_t) };
+			fs.seekg(0, std::istream::beg);
+			data_.reserve(size);
+			// get data
 			for (std::string line; std::getline(fs, line);)
 			{
 				data_.push_back(std::move(line));

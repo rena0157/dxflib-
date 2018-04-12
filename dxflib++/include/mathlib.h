@@ -12,8 +12,8 @@ namespace dxflib
 		}
 		inline double distance(const entities::vertex& v0, const entities::vertex& v1, const double bulge)
 		{
-			// TODO: Implement this function
-			return 0;
+			return distance(v0, v1)/(2*sin(4*atan(bulge)/2))*4*atan(bulge);
 		}
+
 	}
 }

@@ -17,7 +17,7 @@ int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std
 	int code{-1};
 	try
 	{
-		if (dxflib::utilities::is_number(dxflib::utilities::trim(cl)))
+		if (dxflib::utilities::is_number(dxflib::utilities::ltrim_copy(cl)))
 			code = std::stoi(cl);
 	}
 	catch(std::invalid_argument&)
