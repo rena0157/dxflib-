@@ -5,6 +5,7 @@
 
 namespace dxflib
 {
+
 	namespace entities
 	{
 		/**
@@ -14,7 +15,8 @@ namespace dxflib
 		{
 			line,
 			lwpolyline,
-			hatch
+			hatch,
+			all
 		};
 
 		/**
@@ -27,7 +29,7 @@ namespace dxflib
 			// Entity Properties
 			std::string layer{};
 			std::string handle{};
-			std::vector<std::string> soft_pointers{};
+			std::string soft_pointer{};
 			std::string color_name{};
 			int raw_color{};
 
@@ -38,7 +40,10 @@ namespace dxflib
 			* \return Status -> 0:fail, 1:success
 			*/
 			virtual int parse(const std::string& cl, const std::string& nl);
+
+			// Free function
 			virtual void free();
+
 		};
 
 		namespace group_codes
@@ -63,16 +68,15 @@ namespace dxflib
 		class entity
 		{
 		public:
-			std::string layer;  // Layer the entity is on 
-			std::string handle; // Handle of the entity
-			utilities::color color;
+			std::string layer;         // Layer the entity is on 
+			std::string handle;        // Handle of the entity
+			utilities::color color;    // Color of the entity
+			std::string soft_pointer;  // Soft pointer to another entity's handle
 
 			// Constructor
 			explicit entity(entity_buffer_base&);
 
 		protected:
-			
-			std::vector<std::string> soft_pointers_; // Soft pointer to another entity's handle
 			std::string color_name_;                // ACAD color name
 			int raw_color_;                         // raw color value
 		};

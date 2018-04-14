@@ -23,7 +23,11 @@ namespace dxflib
 		std::vector<entities::lwpolyline> lwpolylines; // LWPOLYLINE Entities
 		std::vector<entities::hatch> hatches;          // HATCH Entities
 
+		// Get entities
+		std::vector<entities::entity*> get_entities_layer(std::string&, entities::entity_types = entities::entity_types::all);
+
 	private:
+		
 		/**
 		 * \brief Reads the file that is stored in filename_
 		 */
@@ -33,6 +37,11 @@ namespace dxflib
 		 * populates the Entities vectors
 		 */
 		void parse_data();
+
+		/**
+		 * \brief Links entities to other entities, noteably hatches and polyline
+		 */
+		void linker();
 
 		const char* filename_;          // Path to the DXF file
 		std::vector<std::string> data_; // raw data from the dxf file

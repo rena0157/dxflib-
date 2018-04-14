@@ -1,6 +1,7 @@
 #pragma once
 #include "entity.h"
 #include "point.h"
+#include "lwpolyline.h"
 
 namespace dxflib
 {
@@ -58,6 +59,18 @@ namespace dxflib
 			int path_count;            // Number of boundary paths (loops)
 			double pattern_angle;      // hatch pattern angle
 			double pattern_scale;      // hatch pattern scale
+
+			// Interfacing
+			// Polyline pointer
+			void set_lwpolyline(lwpolyline* in) { polyline_ptr_ = in; }
+			lwpolyline* get_lwpolyline() const { return polyline_ptr_; }
+
+			// Geometric
+			double area() const { return polyline_ptr_ == nullptr ? -1 : polyline_ptr_->area; }
+			double perimeter() const { return polyline_ptr_ == nullptr ? -1 : polyline_ptr_->length; }
+
+		private:
+			lwpolyline * polyline_ptr_{nullptr};
 		};
 	}
 }

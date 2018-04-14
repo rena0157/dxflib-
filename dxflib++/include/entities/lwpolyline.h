@@ -87,7 +87,7 @@ namespace dxflib
 			explicit lwpolyline(lwpolyline_buffer&);
 			
 			// Other
-			void recalc_geometry() { calc_geometry(); };
+			void recalc_geometry() { calc_geometry(); }
 
 		private:
 			bool drawn_counter_clockwise_{};
