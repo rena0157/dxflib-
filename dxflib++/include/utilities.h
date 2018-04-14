@@ -76,8 +76,8 @@ namespace dxflib
 			explicit color(const char* hex_str);
 			std::string hex;
 			int red;
-			int blue;
 			int green;
+			int blue;
 		private:
 			int raw_color_;
 			void parse();
