@@ -1,8 +1,8 @@
 #pragma once
 #include "dxflib++/include/entities/line.h"
 #include "dxflib++/include/entities/lwpolyline.h"
+#include "entities/hatch.h"
 #include <vector>
-#include <deque>
 
 namespace dxflib
 {
@@ -19,8 +19,9 @@ namespace dxflib
 		explicit cadfile(const char* path);
 
 		// Entities
-		std::vector<entities::line> lines;             // LINE Entity
-		std::vector<entities::lwpolyline> lwpolylines; // LWPOLYLINE Entity
+		std::vector<entities::line> lines;             // LINE Entities
+		std::vector<entities::lwpolyline> lwpolylines; // LWPOLYLINE Entities
+		std::vector<entities::hatch> hatches;          // HATCH Entities
 
 	private:
 		/**
@@ -55,6 +56,7 @@ namespace dxflib
 		{
 			const char* line{ "LINE" };
 			const char* lwpolyline{ "LWPOLYLINE" };
+			const char* hatch{ "HATCH" };
 		};
 	}
 }

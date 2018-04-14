@@ -11,7 +11,7 @@ namespace dxflib
 		/**
 		 * \brief Geometric line segment
 		 */
-		class geo_line
+		class geoline
 		{
 		public:
 			static constexpr int bulge_null{ -2 };
@@ -21,7 +21,7 @@ namespace dxflib
 			 * \param v1 end vertex
 			 * \param bulge bulge value if arc segment
 			 */
-			explicit geo_line(const vertex& v0, const vertex& v1, double bulge=bulge_null);
+			explicit geoline(const vertex& v0, const vertex& v1, double bulge=bulge_null);
 
 			vertex v0;
 			vertex v1;
@@ -79,15 +79,18 @@ namespace dxflib
 			double starting_width;          // the starting global width 
 			double ending_width;            // the ending global width
 			double width;                   // the global width: only if starting width and ending width are 0
-			std::vector<geo_line> lines;    // the component lines of the polyline
-			double length;                  // total length of the polyline
-			
+			std::vector<geoline> lines;     // the component lines of the polyline
+			double length{};                  // total length of the polyline
+			double area{};                    // Total area of the polyline
+
 			// Constructors
 			explicit lwpolyline(lwpolyline_buffer&);
 			
 			// Other
+			void recalc_geometry() { calc_geometry(); };
 
 		private:
+			bool drawn_counter_clockwise_{};
 			/**
 			 * \brief Geoline binder takes vector of lines and creates a vector of geolines
 			 * \param x X values vector
@@ -95,14 +98,13 @@ namespace dxflib
 			 * \param bulge Bulge values
 			 * \return a vector of geolines
 			 */
-			std::vector<geo_line> geoline_binder(const std::vector<double>& x,
+			std::vector<geoline> geoline_binder(const std::vector<double>& x,
 				const std::vector<double>& y, const std::vector<double>& bulge) const;
 
 			/**
-			 * \brief Function that calculates the total length of the polyline
-			 * \return returns the sum of all geoline lengths
+			 * \brief Function that calculates the total length & area of the polyline
 			 */
-			double calc_length();
+			void calc_geometry();
 		};
 	}
 }

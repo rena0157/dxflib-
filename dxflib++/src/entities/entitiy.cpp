@@ -43,7 +43,7 @@ int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std
 		handle = nl;
 		return 1;
 	case entity_codes::soft_pointer:
-		soft_pointer = nl;
+		soft_pointers.push_back(nl);
 		return 1;
 	case entity_codes::color_name:
 		color_name = nl;
@@ -56,9 +56,16 @@ int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std
 	}
 }
 
+/**
+ * \brief Free the memory in vectors held by the base class
+ */
 void dxflib::entities::entity_buffer_base::free()
 {
-	// TODO: Add Free Function here if needed
+	// Free memory in vetors
+	soft_pointers.clear(); soft_pointers.shrink_to_fit();
+
+	// Reset values to defaults
+	layer = ""; handle = ""; color_name = ""; raw_color = 0;
 }
 
 /**
@@ -67,7 +74,7 @@ void dxflib::entities::entity_buffer_base::free()
 */
 dxflib::entities::entity::entity(entity_buffer_base& eb) :
 	layer(eb.layer), handle(eb.handle), color(eb.raw_color),
-	soft_pointer_(eb.soft_pointer), color_name_(eb.color_name), 
+	soft_pointers_(eb.soft_pointers), color_name_(eb.color_name), 
 	raw_color_(eb.raw_color)
 {
 }

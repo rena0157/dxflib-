@@ -63,6 +63,7 @@ void dxflib::cadfile::parse_data()
 	// Buffers
 	entities::line_buf lb;           // Line Buffer
 	entities::lwpolyline_buffer lwb; // Lwpolyline Buffer
+	entities::hatch_buffer hb;       // Hatch buffer
 
 	for (int linenum{0}; linenum < static_cast<int>(data_.size()) - 1; ++linenum)
 	{
@@ -86,6 +87,12 @@ void dxflib::cadfile::parse_data()
 				current_entity = entities::entity_types::lwpolyline;
 				continue;
 			}
+			if (cl == start_markers.hatch)
+			{
+				extraction_flag = true;
+				current_entity = entities::entity_types::hatch;
+				continue;
+			}
 		}
 		/*
 		 * Extraction Path
@@ -102,6 +109,12 @@ void dxflib::cadfile::parse_data()
 			case entities::entity_types::lwpolyline:
 				if (lwb.parse(cl, nl))
 					linenum++;
+				break;
+
+			case entities::entity_types::hatch:
+				if (hb.parse(cl, nl))
+					linenum++;
+			default:
 				break;
 			}
 		}
@@ -121,6 +134,12 @@ void dxflib::cadfile::parse_data()
 			case entities::entity_types::lwpolyline:
 				lwpolylines.emplace_back(lwb);
 				lwb.free();
+				extraction_flag = false;
+				break;
+
+			case entities::entity_types::hatch:
+				hatches.emplace_back(hb);
+				hb.free();
 				extraction_flag = false;
 				break;
 			}

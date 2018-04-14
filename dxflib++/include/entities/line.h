@@ -22,6 +22,10 @@ namespace dxflib
 			 * \return Status 1:pass, 2: fail.
 			 */
 			int parse(const std::string& cl, const std::string& nl) override;
+			/**
+			 * \brief Frees memory and resets to defaults
+			 */
+			void free() override;
 		};
 
 		namespace group_codes

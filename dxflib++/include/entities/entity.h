@@ -1,6 +1,7 @@
 #pragma once
-#include <string>
 #include "dxflib++/include/utilities.h"
+#include <vector>
+#include <string>
 
 namespace dxflib
 {
@@ -12,7 +13,8 @@ namespace dxflib
 		enum class entity_types
 		{
 			line,
-			lwpolyline
+			lwpolyline,
+			hatch
 		};
 
 		/**
@@ -25,7 +27,7 @@ namespace dxflib
 			// Entity Properties
 			std::string layer{};
 			std::string handle{};
-			std::string soft_pointer{};
+			std::vector<std::string> soft_pointers{};
 			std::string color_name{};
 			int raw_color{};
 
@@ -70,9 +72,9 @@ namespace dxflib
 
 		protected:
 			
-			std::string soft_pointer_; // Soft pointer to another entity's handle
-			std::string color_name_;   // ACAD color name
-			int raw_color_;            // raw color value
+			std::vector<std::string> soft_pointers_; // Soft pointer to another entity's handle
+			std::string color_name_;                // ACAD color name
+			int raw_color_;                         // raw color value
 		};
 	}
 	

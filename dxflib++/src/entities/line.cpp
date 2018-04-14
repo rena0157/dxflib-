@@ -74,6 +74,14 @@ int dxflib::entities::line_buf::parse(const std::string& cl, const std::string& 
 	}
 }
 
+void dxflib::entities::line_buf::free()
+{
+	entity_buffer_base::free();
+	x0 = 0; y0 = 0; z0 = 0;
+	x1 = 0; y1 = 0; z1 = 0;
+	thickness = 0;
+}
+
 /**
  * \brief Line buffer constructor for the line entity
  * \param lb Line Buffer

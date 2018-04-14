@@ -137,6 +137,7 @@
     <ClInclude Include="include\app.h" />
     <ClInclude Include="include\Cadfile.h" />
     <ClInclude Include="include\entities\entity.h" />
+    <ClInclude Include="include\entities\hatch.h" />
     <ClInclude Include="include\entities\line.h" />
     <ClInclude Include="include\entities\lwpolyline.h" />
     <ClInclude Include="include\entities\point.h" />
@@ -146,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="src\cadfile.cpp" />
     <ClCompile Include="src\entities\entitiy.cpp" />
+    <ClCompile Include="src\entities\hatch.cpp" />
     <ClCompile Include="src\entities\line.cpp" />
     <ClCompile Include="src\entities\lwpolyline.cpp" />
     <ClCompile Include="src\entities\point.cpp" />
