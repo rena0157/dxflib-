@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "dxflib++/include/utilities.h"
 
 namespace dxflib
 {
@@ -62,6 +63,7 @@ namespace dxflib
 		public:
 			std::string layer;  // Layer the entity is on 
 			std::string handle; // Handle of the entity
+			utilities::color color;
 
 			// Constructor
 			explicit entity(entity_buffer_base&);

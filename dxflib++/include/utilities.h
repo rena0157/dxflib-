@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <memory>
 
 namespace dxflib
 {
@@ -67,5 +68,19 @@ namespace dxflib
 			rtrim(str); ltrim(str);
 			return str;
 		}
+
+		class color
+		{
+		public:
+			explicit color(int raw_color);
+			explicit color(const char* hex_str);
+			std::string hex;
+			int red;
+			int blue;
+			int green;
+		private:
+			int raw_color_;
+			void parse();
+		};
 	}
 }

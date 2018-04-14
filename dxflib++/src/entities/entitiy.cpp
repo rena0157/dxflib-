@@ -66,8 +66,9 @@ void dxflib::entities::entity_buffer_base::free()
 * \param eb entity buffer base struct
 */
 dxflib::entities::entity::entity(entity_buffer_base& eb) :
-	layer(eb.layer), handle(eb.handle), soft_pointer_(eb.soft_pointer),
-	color_name_(eb.color_name), raw_color_(eb.raw_color)
+	layer(eb.layer), handle(eb.handle), color(eb.raw_color),
+	soft_pointer_(eb.soft_pointer), color_name_(eb.color_name), 
+	raw_color_(eb.raw_color)
 {
 }
 

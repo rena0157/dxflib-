@@ -2,6 +2,7 @@
 #include "dxflib++/include/entities/point.h"
 #include "entity.h"
 #include <vector>
+#include "dxflib++/include/utilities.h"
 
 namespace dxflib
 {
@@ -72,14 +73,14 @@ namespace dxflib
 		{
 		public:
 			// Properties
-			int vertex_count;            // Total number of verticies in the polyline
-			bool is_closed;              // returns true if the polyline is closed
-			double elevation;            // elevation of the polyline
-			double starting_width;       // the starting global width 
-			double ending_width;         // the ending global width
-			double width;                // the global width: only if starting width and ending width are 0
-			std::vector<geo_line> lines; // the component lines of the polyline
-			double length;               // total length of the polyline
+			int vertex_count;               // Total number of verticies in the polyline
+			bool is_closed;                 // returns true if the polyline is closed
+			double elevation;               // elevation of the polyline
+			double starting_width;          // the starting global width 
+			double ending_width;            // the ending global width
+			double width;                   // the global width: only if starting width and ending width are 0
+			std::vector<geo_line> lines;    // the component lines of the polyline
+			double length;                  // total length of the polyline
 			
 			// Constructors
 			explicit lwpolyline(lwpolyline_buffer&);

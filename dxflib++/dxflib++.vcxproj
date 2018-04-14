@@ -149,6 +149,7 @@
     <ClCompile Include="src\entities\line.cpp" />
     <ClCompile Include="src\entities\lwpolyline.cpp" />
     <ClCompile Include="src\entities\point.cpp" />
+    <ClCompile Include="src\utilities\color.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
