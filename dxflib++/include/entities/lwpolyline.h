@@ -59,9 +59,8 @@ namespace dxflib
 			};
 		}
 
-		struct lwpolyline_buffer : entity_buffer_base
+		struct lwpolyline_buffer : virtual entity_buffer_base
 		{
-			constexpr static int null_edge_type{ -1 };
 			// Geometric Properties
 			std::vector<double> x_values;
 			std::vector<double> y_values;
@@ -73,7 +72,6 @@ namespace dxflib
 			double starting_width{};
 			double ending_width{};
 			double width{};
-			int edge_type{null_edge_type};
 
 
 			// Parse function override

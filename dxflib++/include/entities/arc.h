@@ -14,10 +14,11 @@ namespace dxflib::entities
 			center_point_z = 30,
 			radius = 40,
 			start_angle = 50,
-			end_angle = 51
+			end_angle = 51,
+			is_ccw = 73
 		};
 	}
-	struct arc_buffer : entity_buffer_base
+	struct arc_buffer : virtual entity_buffer_base
 	{
 		double center_point_x{};
 		double center_point_y{};
@@ -26,6 +27,8 @@ namespace dxflib::entities
 		double radius{};
 		double start_angle{};
 		double end_angle{};
+		bool is_ccw{};
+
 		int parse(const std::string& cl, const std::string& nl) override;
 		void free() override;
 	};
@@ -50,6 +53,7 @@ namespace dxflib::entities
 		double get_start_angle() const { return start_angle_; }              // Returns the Starting Angle
 		double get_end_angle() const { return end_angle_; }                  // Returns the Final Angle
 		double get_total_angle() const { return end_angle_ - start_angle_; } // Returns the Final Angle - Starting Angle
+		bool is_counterclock_wise() const { return is_ccw_; }                 // Retuens True if counterclock wise
 
 	private:
 		// Properties
@@ -60,6 +64,7 @@ namespace dxflib::entities
 		double thickness_;    // thickness of the line that is the arc
 		double start_angle_;  // starting angle in degrees
 		double end_angle_;    // ending angle in degrees
+		bool is_ccw_;          // True if the arc is counterclock wise
 
 		void calc_other_points();
 	};

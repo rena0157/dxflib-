@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "point.h"
 #include "lwpolyline.h"
+#include "arc.h"
 
 namespace dxflib
 {
@@ -15,22 +16,42 @@ namespace dxflib
 				elevation_point_y = 20,
 				elevation_point_z = 30,
 				hatch_pattern = 2,
+				solid_fill_color = 63,
 				solid_fill_flag = 70,
 				associativity_flag = 71,
 				num_paths = 91,
+				hatch_style = 75,
+				hatch_pattern_type = 76,
 				pattern_angle = 52,
 				pattern_scale = 41,
-				edge_type = 72
+				pattern_line_count = 78,
+				edge_type = 72,
+				edge_count = 93,
+				seed_count = 98,
+				offset_vector = 11,
 			};
 
-			enum class boundary_path
+			enum class boundary_paths
 			{
-				// TODO: Need to finish this
+				line = 1,
+				circular_arc = 2,
+				eliptical_arc = 3,
+				spline = 4
+			};
+
+			enum class line_path
+			{
+				starting_point_x = 10,
+				ending_point_x = 11,
+				starting_point_y = 20,
+				ending_point_y = 21
 			};
 		}
 
-		struct hatch_buffer : lwpolyline_buffer
+		struct hatch_buffer : lwpolyline_buffer, arc_buffer
 		{
+			constexpr static int null_edge_type{ -1 };
+			int edge_type{ null_edge_type };
 			// Properties
 			double elevation_point_x{};
 			double elevation_point_y{};
@@ -45,7 +66,6 @@ namespace dxflib
 			// Functions
 			int parse(const std::string& cl, const std::string& nl) override;
 			void free() override;
-
 		};
 
 		namespace exceptions

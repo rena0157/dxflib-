@@ -44,5 +44,25 @@ namespace dxflib
 		{
 			return v1.x - v0.x == 0 ? 0 : (v0.y + v1.y)*(v1.x - v0.x)/2;
 		}
+
+		inline double deg2_rad(const double deg) {return deg / 180 * pi;}
+
+		inline double rad2_deg(const double rad) { return rad * 180 / pi; }
+
+		class basic_vector
+		{
+		public:
+			explicit basic_vector();
+			explicit basic_vector(entities::vertex& v0, entities::vertex& v1);
+
+			// Public interface
+			const entities::vertex& operator[](int id) const;
+			entities::vertex& operator[](int id);
+			double magnitude() const { return distance(v0_, v1_); }
+
+		private:
+			entities::vertex v0_;
+			entities::vertex v1_;
+		};
 	}
 }

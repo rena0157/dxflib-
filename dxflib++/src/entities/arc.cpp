@@ -52,7 +52,12 @@ int dxflib::entities::arc_buffer::parse(const std::string& cl, const std::string
 	case group_codes::arc::end_angle:
 		end_angle = std::stod(nl);
 		return 1;
+
+	case group_codes::arc::is_ccw:
+		is_ccw = std::stoi(nl);
+		return 1;
 	}
+	return 0;
 }
 
 void dxflib::entities::arc_buffer::free()
@@ -66,7 +71,7 @@ void dxflib::entities::arc_buffer::free()
 dxflib::entities::arc::arc(arc_buffer& ab):
 	center_point_(ab.center_point_x, ab.center_point_y, ab.center_point_z),
 	radius_(ab.radius), thickness_(ab.thickness), start_angle_(ab.start_angle),
-	end_angle_(ab.end_angle)
+	end_angle_(ab.end_angle), is_ccw_(ab.is_ccw)
 {
 	calc_other_points();
 }

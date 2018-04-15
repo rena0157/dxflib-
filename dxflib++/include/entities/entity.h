@@ -25,10 +25,9 @@ namespace dxflib
 		struct entity_buffer_base
 		{
 			virtual ~entity_buffer_base();
-
 			// Entity Properties
 			std::string layer{};
-			std::string handle{};
+			std::string handle{};      
 			std::string soft_pointer{};
 			std::string color_name{};
 			int raw_color{};
@@ -58,7 +57,8 @@ namespace dxflib
 				handle = 5,         // Handle of an entity
 				soft_pointer = 330, // Soft pointer to another entity
 				raw_color = 420,    // Raw color value: 24 bit (bbggrr) where bb, gg, rr are 8bit integars.
-				color_name = 430    // color name
+				color_name = 430,   // color name
+				ignore1 = 1070,     // Ignored do to naming conflict, not used
 			};
 		}
 

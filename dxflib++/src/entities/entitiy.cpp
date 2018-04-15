@@ -52,6 +52,9 @@ int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std
 	case entity_codes::raw_color:
 		raw_color = std::stoi(nl);
 		return 1;
+
+	case entity_codes::ignore1:
+		return 1;
 	default:
 		return 0;
 	}
