@@ -1,5 +1,6 @@
 #include "dxflib++/include/entities/line.h"
 #include "dxflib++/include/utilities.h"
+#include "dxflib++/include/mathlib.h"
 
 // linebuf parse
 /**
@@ -88,10 +89,37 @@ void dxflib::entities::line_buf::free()
  */
 dxflib::entities::line::line(line_buf& lb) : 
 	entity(lb), 
-	v0(lb.x0, lb.y0, lb.z0),
-    v1(lb.x1, lb.y1, lb.z1), 
-	thickness(lb.thickness)
+	v0_(lb.x0, lb.y0, lb.z0),
+    v1_(lb.x1, lb.y1, lb.z1), 
+	thickness_(lb.thickness),
+	length_(mathlib::distance(v0_, v1_))
 {
 	
+}
+
+const dxflib::entities::vertex& dxflib::entities::line::get_vertex(const int id) const
+{
+	switch (id)
+	{
+	case 0: return v0_;
+	case 1: return v1_;
+	default: return v0_;
+	}
+}
+
+void dxflib::entities::line::move_vertex(const int id, const vertex& new_vertex)
+{
+	switch (id)
+	{
+	case 0: v0_ = new_vertex;
+	case 1: v1_ = new_vertex;
+	default: ;
+	}
+	recalculate_geometry();
+}
+
+void dxflib::entities::line::recalculate_geometry()
+{
+	length_ = mathlib::distance(v0_, v1_);
 }
 

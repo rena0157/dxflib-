@@ -12,6 +12,7 @@ namespace dxflib
 		public:
 			double x, y, z;
 			explicit point_base(double x = 0, double y = 0, double z = 0);
+			friend std::ostream& operator<<(std::ostream& os, point_base pb);
 		};
 
 		/**

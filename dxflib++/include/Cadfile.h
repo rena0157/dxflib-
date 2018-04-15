@@ -23,16 +23,19 @@ namespace dxflib
 		std::vector<entities::lwpolyline> lwpolylines; // LWPOLYLINE Entities
 		std::vector<entities::hatch> hatches;          // HATCH Entities
 
+		// Get entities
+		std::vector<entities::entity*> get_entities_layer(std::string&, entities::entity_types = entities::entity_types::all);
+
+		// Public Interface
+		std::string get_filename() const { return std::string{ filename_ }; } // Returns the filename of the cadfile
+		const std::vector<std::string>& get_data() const { return data_; }    // Returns the data from the DXF file
+
+
 	private:
-		/**
-		 * \brief Reads the file that is stored in filename_
-		 */
-		void read_file();
-		/**
-		 * \brief Main parse function for the dxf file: iterates through the data_ vector and
-		 * populates the Entities vectors
-		 */
-		void parse_data();
+		
+		void read_file();  // Reads the file that is stored in filename_
+		void parse_data(); // Main parse function for the dxf file: iterates through the data_ vector and
+		void linker();     // Links entities to other entities, noteably hatches and polyline
 
 		const char* filename_;          // Path to the DXF file
 		std::vector<std::string> data_; // raw data from the dxf file
