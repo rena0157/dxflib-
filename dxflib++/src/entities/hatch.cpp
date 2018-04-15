@@ -1,5 +1,5 @@
 #include "dxflib++/include/entities/hatch.h"
-#include <cassert>
+#include <utility>
 #include "dxflib++/include/mathlib.h"
 
 int dxflib::entities::hatch_buffer::parse(const std::string& cl, const std::string& nl)
@@ -113,17 +113,43 @@ void dxflib::entities::hatch_buffer::free()
 	pattern_scale = 0;
 }
 
-dxflib::entities::hatch::hatch(hatch_buffer& hb):
-	entity(hb), elevation(hb.elevation_point_x, hb.elevation_point_y, hb.elevation_point_z),
-	hatch_pattern(hb.hatch_pattern), is_solid(hb.is_solid), is_associative(hb.is_associative),
-	path_count(hb.path_count), pattern_angle(hb.pattern_angle), pattern_scale(hb.pattern_scale)
+dxflib::entities::exceptions::no_associated_lwpolyline::no_associated_lwpolyline(std::string error):
+	error_(std::move(error))
 {
-	if (!is_associative)
+
+}
+
+dxflib::entities::hatch::hatch(hatch_buffer& hb):
+	entity(hb), elevation_(hb.elevation_point_x, hb.elevation_point_y, hb.elevation_point_z),
+	hatch_pattern_(hb.hatch_pattern), is_solid_(hb.is_solid), is_associative_(hb.is_associative),
+	path_count_(hb.path_count), pattern_angle_(hb.pattern_angle), pattern_scale_(hb.pattern_scale)
+{
+	if (!is_associative_)
 	{
 		geolines_ = { geoline::geoline_binder(
 		hb.x_values, hb.y_values, hb.bulge_values, true) };
 		calc_geometry();
 	}
+}
+
+const dxflib::entities::lwpolyline* dxflib::entities::hatch::get_lwpolyline() const
+{
+	// If there is not associated polyline then throw an exception
+	if (polyline_ptr_ == nullptr)
+		throw exceptions::no_associated_lwpolyline("There is no assocated lwpolyline with: '" + 
+			handle_ + "', Cannot return nullptr");
+	// If everything checks out then return the polyline pointer
+	return polyline_ptr_;
+}
+
+inline double dxflib::entities::hatch::get_area() const
+{
+	return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->get_area();
+}
+
+inline double dxflib::entities::hatch::get_perimeter() const
+{
+	return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->get_length();
 }
 
 void dxflib::entities::hatch::calc_geometry()

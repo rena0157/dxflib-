@@ -23,9 +23,6 @@ namespace dxflib
 		std::vector<entities::lwpolyline> lwpolylines; // LWPOLYLINE Entities
 		std::vector<entities::hatch> hatches;          // HATCH Entities
 
-		// Get entities
-		std::vector<entities::entity*> get_entities_layer(std::string&, entities::entity_types = entities::entity_types::all);
-
 		// Public Interface
 		std::string get_filename() const { return std::string{ filename_ }; } // Returns the filename of the cadfile
 		const std::vector<std::string>& get_data() const { return data_; }    // Returns the data from the DXF file

@@ -2,7 +2,6 @@
 #include "dxflib++/include/entities/point.h"
 #include "entity.h"
 #include <vector>
-#include "dxflib++/include/mathlib.h"
 
 namespace dxflib
 {
@@ -82,6 +81,7 @@ namespace dxflib
 			void free() override;
 		};
 
+		// ReSharper disable once CppPolymorphicClassWithNonVirtualPublicDestructor
 		class lwpolyline : public entity
 		{
 		public:

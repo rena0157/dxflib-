@@ -64,9 +64,9 @@ void dxflib::entities::arc_buffer::free()
 }
 
 dxflib::entities::arc::arc(arc_buffer& ab):
-	center_point(ab.center_point_x, ab.center_point_y, ab.center_point_z),
-	radius(ab.radius), thickness(ab.thickness), start_angle(ab.start_angle),
-	end_angle(ab.end_angle), total_angle(end_angle - start_angle)
+	center_point_(ab.center_point_x, ab.center_point_y, ab.center_point_z),
+	radius_(ab.radius), thickness_(ab.thickness), start_angle_(ab.start_angle),
+	end_angle_(ab.end_angle)
 {
 	calc_other_points();
 }

@@ -46,10 +46,23 @@ namespace dxflib
 			int parse(const std::string& cl, const std::string& nl) override;
 			void free() override;
 
-		private:
-
 		};
 
+		namespace exceptions
+		{
+			/**
+			 * \brief Exception that is called when there is no associated lwpolyline with a hatch
+			 */
+			struct no_associated_lwpolyline : std::exception
+			{
+				explicit no_associated_lwpolyline(std::string error);
+				const char* what() const override { return error_.c_str(); }
+			private:
+				std::string error_;
+			};
+		}
+
+		// ReSharper disable once CppPolymorphicClassWithNonVirtualPublicDestructor
 		class hatch : public entity
 		{
 		public:
@@ -60,30 +73,36 @@ namespace dxflib
 			 */
 			explicit hatch(hatch_buffer& hb);
 
-			// General Properties
-			vertex elevation;          // Elevation point of the hatch
-			std::string hatch_pattern; // hatch pattern name
-			bool is_solid;             // true if hatch is solid fill
-			bool is_associative;       // true is the hatch has an associated lwpolyline
-			int path_count;            // Number of boundary paths (loops)
-			double pattern_angle;      // hatch pattern angle
-			double pattern_scale;      // hatch pattern scale
-
-			// Interfacing
-			// Polyline pointer
-			void set_lwpolyline(lwpolyline* in) { polyline_ptr_ = in; }
-			lwpolyline* get_lwpolyline() const { return polyline_ptr_; }
-
-			// Geometric
-			double area() const { return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->get_area(); }
-			double perimeter() const { return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->get_length(); }
+			// Public Interface
+			// Get
+			const lwpolyline* get_lwpolyline() const;                               // Returns the pointer to a lwpolyline
+			double get_area() const;                                                // Returns the area of the hatch
+			double get_perimeter() const;                                           // Returns the Perimeter of the hatch
+			const vertex& get_elevation_point() const { return elevation_; }        // Returns the elevation of the hatch
+			const std::string& get_hatch_pattern() const { return hatch_pattern_; } // Returns the hatch pattern name
+			bool is_solid() const { return is_solid_; }                             // Returns true if the hatch pattern is solid
+			bool is_associated() const { return is_associative_; }                  // Returns true if the hatch has an associated lwpolyline
+			int path_count() const { return path_count_; }                          // Returns the number of paths that are associated with the hatch
+			double get_pattern_angle() const { return pattern_angle_; }             // Returns the hatch pattern angle (Must be !solid)
+			double get_pattern_scale() const { return pattern_scale_; }             // Returns the hatch patter scale (Must be !solid) 
+			// Set
+			void set_lwpolyline(lwpolyline* in) { polyline_ptr_ = in; }             // Sets the lwpolyline pointer of the hatch
 
 		private:
-			double area_{};
-			double perimeter_{};
-			lwpolyline * polyline_ptr_{nullptr};
-			std::vector<geoline> geolines_;
-			void calc_geometry();
+			// Members
+			// General Properties
+			vertex elevation_;                    // Elevation point of the hatch
+			std::string hatch_pattern_;           // hatch pattern name
+			bool is_solid_;                       // true if hatch is solid fill
+			bool is_associative_;                 // true is the hatch has an associated lwpolyline
+			int path_count_;                      // Number of boundary paths (loops)
+			double pattern_angle_;                // hatch pattern angle
+			double pattern_scale_;                // hatch pattern scale
+			double area_{};                      // Area of the hatch
+			double perimeter_{};                 // Perimeter of the hatch
+			lwpolyline * polyline_ptr_{nullptr}; // Pointer to a lwpolyline
+			std::vector<geoline> geolines_;      // geolines that are constructed if there is not lwpolyline* found
+			void calc_geometry();                // Calculate the area and perimeter
 		};
 	}
 }

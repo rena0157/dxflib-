@@ -88,7 +88,7 @@ dxflib::entities::entity::entity() : color(0), layer_(""),
 
 void dxflib::entities::entity::recalculate_geometry()
 {
-
+	// Not defined
 }
 
 

@@ -18,45 +18,6 @@ dxflib::cadfile::cadfile(const char* path) : filename_(path)
 	linker();
 }
 
-std::vector<dxflib::entities::entity*> dxflib::cadfile::get_entities_layer(std::string& layer, entities::entity_types et)
-{
-	std::vector<dxflib::entities::entity*> return_vector;
-	switch (et)
-	{
-	case entities::entity_types::line:
-		for (auto& line : lines)
-			if (line.get_layer() == layer)
-				return_vector.push_back(&line);
-		break;
-
-	case entities::entity_types::lwpolyline:
-		for (auto& polyline : lwpolylines)
-			if (polyline.get_layer() == layer)
-				return_vector.push_back(&polyline);
-		break;
-
-	case entities::entity_types::hatch:
-		for (auto& hatch : hatches)
-			if (hatch.get_layer() == layer)
-				return_vector.push_back(&hatch);
-		break;
-
-	case entities::entity_types::all:
-		for (auto& hatch : hatches)
-			if (hatch.get_layer() == layer)
-				return_vector.push_back(&hatch);
-
-		for (auto& line : lines)
-			if (line.get_layer() == layer)
-				return_vector.push_back(&line);
-
-		for (auto& polyline : lwpolylines)
-			if (polyline.get_layer() == layer)
-				return_vector.push_back(&polyline);
-		break;
-	}
-	return return_vector;
-}
 
 /**
  * \brief Reads the Dxf File
@@ -196,7 +157,7 @@ void dxflib::cadfile::linker()
 {
 	for (auto& hatch : hatches)
 	{
-		if (!hatch.is_associative)
+		if (!hatch.is_associated())
 			continue;
 
 		for (auto& polyline : lwpolylines)

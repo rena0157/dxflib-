@@ -65,6 +65,7 @@ namespace dxflib
 		/**
 		* \brief Entity Base class
 		*/
+		// ReSharper disable CppPolymorphicClassWithNonVirtualPublicDestructor
 		class entity
 		{
 		public:
