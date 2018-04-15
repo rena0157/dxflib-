@@ -4,14 +4,14 @@
 #include <cassert>
 
 dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const double bulge):
-	v0(v0), v1(v1), bulge(bulge),
-	length(bulge == bulge_null ? mathlib::distance(v0, v1) : mathlib::distance(v0, v1, bulge))
+	v0_(v0), v1_(v1),
+	bulge_(bulge)
 {
 
 }
 
 std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder(const std::vector<double>& x,
-	const std::vector<double>& y, const std::vector<double>& bulge, bool is_closed)
+	const std::vector<double>& y, const std::vector<double>& bulge, const bool is_closed)
 {
 	// TODO: Add logging if failure
 	assert(x.size() == y.size() && x.size() == bulge.size() && "Vectors must be the same size");
@@ -33,6 +33,38 @@ std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder
 	if (is_closed)
 		geolines.emplace_back(vertex{ x.back(), y.back() }, vertex{ x[0], y[0] }, bulge.back());
 	return geolines;
+}
+
+const dxflib::entities::vertex& dxflib::entities::geoline::operator[](const int id) const
+{
+	switch (id)
+	{
+	case 0: return v0_;
+	case 1: return v1_;
+	default: throw std::out_of_range("Only Two points in a geoline\n");
+	}
+}
+
+/**
+ * \brief Returns a vertex as a ref from a geoline
+ * \param id Either 1 for the first vertex or two for the second
+ * \return the vertex as a ref
+ */
+dxflib::entities::vertex& dxflib::entities::geoline::operator[](const int id)
+{
+	switch (id)
+	{
+	case 0: return v0_;
+	case 1: return v1_;
+	default: throw std::out_of_range("Only Two points in a geoline\n");
+	}
+}
+
+inline double dxflib::entities::geoline::get_length() const
+{
+	if (bulge_ == bulge_null)
+		return mathlib::distance(v0_, v1_);
+	return mathlib::distance(v0_, v1_, bulge_);
 }
 
 int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std::string& nl)
@@ -130,10 +162,16 @@ void dxflib::entities::lwpolyline_buffer::free()
 }
 
 dxflib::entities::lwpolyline::lwpolyline(lwpolyline_buffer& lwb) : entity(lwb),
-	vertex_count(lwb.vertex_count), is_closed(lwb.polyline_flag), elevation(lwb.elevation),
-	starting_width(lwb.starting_width), ending_width(lwb.ending_width), width(lwb.width),
-	lines(geoline::geoline_binder(lwb.x_values, lwb.y_values, lwb.bulge_values, is_closed))
+	vertex_count_(lwb.vertex_count), is_closed_(lwb.polyline_flag), elevation_(lwb.elevation),
+	starting_width_(lwb.starting_width), ending_width_(lwb.ending_width), width_(lwb.width),
+	lines_(geoline::geoline_binder(lwb.x_values, lwb.y_values, lwb.bulge_values, is_closed_))
 {
+	calc_geometry();
+}
+
+void dxflib::entities::lwpolyline::move_vertex(const int id, const vertex& new_vertex)
+{
+	lines_[id][0] = new_vertex;
 	calc_geometry();
 }
 
@@ -143,20 +181,37 @@ void dxflib::entities::lwpolyline::calc_geometry()
 	double total_area{ 0 };
 
 	// iterate through all geolines and return a total length & area
-	for (const auto& line : lines)
+	for (auto& line : lines_)
 	{
-		total_length += line.length;
-		total_area += mathlib::trapz_area(line.v0, line.v1);
+		total_length += line.get_length();
+		total_area += mathlib::trapz_area(line[0], line[1]);
 	}
 
 	// set the total length of the polyline
-	length = total_length;
+	length_ = total_length;
 
 	/*
 	 * Note: Clockwise yeilds a positive area, Counterclockwise drawing yeilds a negative area.
 	 * Since area is always positive though we take to abs() of the yeild
 	 */
-	if (area < 0)
+	if (area_ < 0)
 		drawn_counter_clockwise_ = true;
-	area = abs(total_area);
+	area_ = abs(total_area);
+}
+
+std::ostream& dxflib::entities::operator<<(std::ostream& os, dxflib::entities::geoline& geoline)
+{
+	os << "Start vertex: " << geoline.v0_ << ", End Vertex: " << geoline.v1_;
+	return os;
+}
+
+std::ostream& dxflib::entities::operator<<(std::ostream& os, dxflib::entities::lwpolyline lw)
+{
+	os << "Layer: " << lw.layer_ << "\n";
+	for (size_t i{0}; i < lw.lines_.size(); ++i)
+	{
+		os << "Line Number: " << i << " " << lw.lines_[i] << "\n";
+	}
+	os << "Length: " << lw.length_ << "\n";
+	return os;
 }

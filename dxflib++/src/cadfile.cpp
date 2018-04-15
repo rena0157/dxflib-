@@ -25,33 +25,33 @@ std::vector<dxflib::entities::entity*> dxflib::cadfile::get_entities_layer(std::
 	{
 	case entities::entity_types::line:
 		for (auto& line : lines)
-			if (line.layer == layer)
+			if (line.get_layer() == layer)
 				return_vector.push_back(&line);
 		break;
 
 	case entities::entity_types::lwpolyline:
 		for (auto& polyline : lwpolylines)
-			if (polyline.layer == layer)
+			if (polyline.get_layer() == layer)
 				return_vector.push_back(&polyline);
 		break;
 
 	case entities::entity_types::hatch:
 		for (auto& hatch : hatches)
-			if (hatch.layer == layer)
+			if (hatch.get_layer() == layer)
 				return_vector.push_back(&hatch);
 		break;
 
 	case entities::entity_types::all:
 		for (auto& hatch : hatches)
-			if (hatch.layer == layer)
+			if (hatch.get_layer() == layer)
 				return_vector.push_back(&hatch);
 
 		for (auto& line : lines)
-			if (line.layer == layer)
+			if (line.get_layer() == layer)
 				return_vector.push_back(&line);
 
 		for (auto& polyline : lwpolylines)
-			if (polyline.layer == layer)
+			if (polyline.get_layer() == layer)
 				return_vector.push_back(&polyline);
 		break;
 	}
@@ -201,7 +201,7 @@ void dxflib::cadfile::linker()
 
 		for (auto& polyline : lwpolylines)
 		{
-			if (hatch.soft_pointer == polyline.handle)
+			if (hatch.get_soft_pointer() == polyline.get_handle())
 				hatch.set_lwpolyline(&polyline);
 		}
 	}

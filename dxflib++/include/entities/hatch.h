@@ -75,8 +75,8 @@ namespace dxflib
 			lwpolyline* get_lwpolyline() const { return polyline_ptr_; }
 
 			// Geometric
-			double area() const { return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->area; }
-			double perimeter() const { return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->length; }
+			double area() const { return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->get_area(); }
+			double perimeter() const { return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->get_length(); }
 
 		private:
 			double area_{};

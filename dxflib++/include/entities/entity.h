@@ -68,18 +68,25 @@ namespace dxflib
 		class entity
 		{
 		public:
-			std::string layer;         // Layer the entity is on 
-			std::string handle;        // Handle of the entity
 			utilities::color color;    // Color of the entity
-			std::string soft_pointer;  // Soft pointer to another entity's handle
-
 			// Constructor
 			explicit entity(entity_buffer_base&);
 			explicit entity();
 
+			// public interface
+			const std::string& get_handle() const { return handle_; }             // Returns the entity handle
+			const std::string& get_soft_pointer() const { return soft_pointer_; } // Returns the entity soft pointer
+			const std::string& get_layer() const { return layer_; }               // Returns the entity layer
+
 		protected:
-			std::string color_name_;                // ACAD color name
-			int raw_color_;                         // raw color value
+			std::string layer_;        // Layer the entity is on 
+			std::string handle_;       // Handle of the entity
+			std::string soft_pointer_; // Soft pointer to another entity's handle
+			std::string color_name_;   // ACAD color name
+			int raw_color_;            // raw color value
+
+			// geometry
+			virtual void recalculate_geometry();
 		};
 	}
 	
