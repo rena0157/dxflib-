@@ -80,4 +80,11 @@ dxflib::entities::entity::entity(entity_buffer_base& eb) :
 {
 }
 
+dxflib::entities::entity::entity() : layer(""), handle(""), 
+	color(0), soft_pointer(""), raw_color_(0)
+{
+
+}
+
+
 

@@ -75,6 +75,7 @@ namespace dxflib
 
 			// Constructor
 			explicit entity(entity_buffer_base&);
+			explicit entity();
 
 		protected:
 			std::string color_name_;                // ACAD color name

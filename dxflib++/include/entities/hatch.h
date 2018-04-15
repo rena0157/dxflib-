@@ -19,11 +19,17 @@ namespace dxflib
 				associativity_flag = 71,
 				num_paths = 91,
 				pattern_angle = 52,
-				pattern_scale = 41
+				pattern_scale = 41,
+				edge_type = 72
+			};
+
+			enum class boundary_path
+			{
+				// TODO: Need to finish this
 			};
 		}
 
-		struct hatch_buffer : entity_buffer_base
+		struct hatch_buffer : lwpolyline_buffer
 		{
 			// Properties
 			double elevation_point_x{};
@@ -39,6 +45,9 @@ namespace dxflib
 			// Functions
 			int parse(const std::string& cl, const std::string& nl) override;
 			void free() override;
+
+		private:
+
 		};
 
 		class hatch : public entity
@@ -66,11 +75,15 @@ namespace dxflib
 			lwpolyline* get_lwpolyline() const { return polyline_ptr_; }
 
 			// Geometric
-			double area() const { return polyline_ptr_ == nullptr ? -1 : polyline_ptr_->area; }
-			double perimeter() const { return polyline_ptr_ == nullptr ? -1 : polyline_ptr_->length; }
+			double area() const { return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->area; }
+			double perimeter() const { return polyline_ptr_ == nullptr ? area_ : polyline_ptr_->length; }
 
 		private:
+			double area_{};
+			double perimeter_{};
 			lwpolyline * polyline_ptr_{nullptr};
+			std::vector<geoline> geolines_;
+			void calc_geometry();
 		};
 	}
 }

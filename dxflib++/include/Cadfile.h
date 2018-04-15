@@ -2,6 +2,7 @@
 #include "dxflib++/include/entities/line.h"
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "entities/hatch.h"
+#include "dxflib++/include/entities/arc.h"
 #include <vector>
 
 namespace dxflib

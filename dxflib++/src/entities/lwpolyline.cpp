@@ -10,6 +10,31 @@ dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const dou
 
 }
 
+std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder(const std::vector<double>& x,
+	const std::vector<double>& y, const std::vector<double>& bulge, bool is_closed)
+{
+	// TODO: Add logging if failure
+	assert(x.size() == y.size() && x.size() == bulge.size() && "Vectors must be the same size");
+
+	// Geoline buffer
+	std::vector<geoline> geolines;
+
+	for (int pointnum{ 0 }; pointnum < static_cast<int>(x.size()) - 1; ++pointnum)
+	{
+		const double b = bulge[pointnum];
+		const double x0 = x[pointnum];
+		const double x1 = x[pointnum + 1];
+		const double y0 = y[pointnum];
+		const double y1 = y[pointnum + 1];
+		geolines.emplace_back(vertex{ x0, y0 }, vertex{ x1, y1 }, b);
+	}
+	// If the line is closed create one more line that extends from the last point to 
+	// the starting point
+	if (is_closed)
+		geolines.emplace_back(vertex{ x.back(), y.back() }, vertex{ x[0], y[0] }, bulge.back());
+	return geolines;
+}
+
 int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std::string& nl)
 {
 	// First send to the buffer base parse function 
@@ -107,34 +132,9 @@ void dxflib::entities::lwpolyline_buffer::free()
 dxflib::entities::lwpolyline::lwpolyline(lwpolyline_buffer& lwb) : entity(lwb),
 	vertex_count(lwb.vertex_count), is_closed(lwb.polyline_flag), elevation(lwb.elevation),
 	starting_width(lwb.starting_width), ending_width(lwb.ending_width), width(lwb.width),
-	lines(geoline_binder(lwb.x_values, lwb.y_values, lwb.bulge_values))
+	lines(geoline::geoline_binder(lwb.x_values, lwb.y_values, lwb.bulge_values, is_closed))
 {
 	calc_geometry();
-}
-
-std::vector<dxflib::entities::geoline> dxflib::entities::lwpolyline::geoline_binder(const std::vector<double>& x,
-	const std::vector<double>& y, const std::vector<double>& bulge) const
-{
-	// TODO: Add logging if failure
-	assert(x.size() != y.size() != bulge.size() && "Vectors must be the same size");
-
-	// Geoline buffer
-	std::vector<geoline> geolines;
-
-	for (int pointnum{0}; pointnum < static_cast<int>(x.size()) - 1; ++pointnum)
-	{
-		const double b = bulge[pointnum];
-		const double x0 = x[pointnum];
-		const double x1 = x[pointnum + 1];
-		const double y0 = y[pointnum];
-		const double y1 = y[pointnum + 1];
-		geolines.emplace_back(vertex{ x0, y0 }, vertex{ x1, y1 }, b);
-	}
-	// If the line is closed create one more line that extends from the last point to 
-	// the starting point
-	if (is_closed)
-		geolines.emplace_back(vertex{ x.back(), y.back() }, vertex{x[0], y[0]}, bulge.back());
-	return geolines;
 }
 
 void dxflib::entities::lwpolyline::calc_geometry()

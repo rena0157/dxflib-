@@ -2,7 +2,6 @@
 #include "dxflib++/include/entities/point.h"
 #include "entity.h"
 #include <vector>
-#include "dxflib++/include/utilities.h"
 
 namespace dxflib
 {
@@ -22,7 +21,8 @@ namespace dxflib
 			 * \param bulge bulge value if arc segment
 			 */
 			explicit geoline(const vertex& v0, const vertex& v1, double bulge=bulge_null);
-
+			static std::vector<geoline> geoline_binder(const std::vector<double>& x,
+				const std::vector<double>& y, const std::vector<double>& bulge, bool is_closed);
 			vertex v0;
 			vertex v1;
 			double bulge;
@@ -45,12 +45,13 @@ namespace dxflib
 				bulge = 42,
 				starting_width = 40,
 				ending_width = 41,
-				width = 43
+				width = 43,
 			};
 		}
 
 		struct lwpolyline_buffer : entity_buffer_base
 		{
+			constexpr static int null_edge_type{ -1 };
 			// Geometric Properties
 			std::vector<double> x_values;
 			std::vector<double> y_values;
@@ -62,6 +63,7 @@ namespace dxflib
 			double starting_width{};
 			double ending_width{};
 			double width{};
+			int edge_type{null_edge_type};
 
 
 			// Parse function override
@@ -85,22 +87,12 @@ namespace dxflib
 
 			// Constructors
 			explicit lwpolyline(lwpolyline_buffer&);
-			
+
 			// Other
 			void recalc_geometry() { calc_geometry(); }
 
 		private:
 			bool drawn_counter_clockwise_{};
-			/**
-			 * \brief Geoline binder takes vector of lines and creates a vector of geolines
-			 * \param x X values vector
-			 * \param y Y values vector
-			 * \param bulge Bulge values
-			 * \return a vector of geolines
-			 */
-			std::vector<geoline> geoline_binder(const std::vector<double>& x,
-				const std::vector<double>& y, const std::vector<double>& bulge) const;
-
 			/**
 			 * \brief Function that calculates the total length & area of the polyline
 			 */
