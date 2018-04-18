@@ -3,6 +3,7 @@
 #include "dxflib++/include/entities/line.h"
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "dxflib++/include/utilities.h"
+#include "dxflib++/include/entities/text.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -66,13 +67,13 @@ void dxflib::cadfile::parse_data()
 	// Buffers
 	entities::line_buf lb;           // Line Buffer
 	entities::lwpolyline_buffer lwb; // Lwpolyline Buffer
-	entities::hatch_buffer hb;       // Hatch buffer
+	entities::hatch_buffer hb;       // Hatch Buffer
+	entities::text_buffer tb;           // Text Buffer
 
 	for (int linenum{0}; linenum < static_cast<int>(data_.size()) - 1; ++linenum)
 	{
 		std::string& cl = data_[linenum];
 		std::string& nl = data_[linenum + 1];
-
 		/*
 		 * Assignment Path
 		 */
@@ -96,6 +97,12 @@ void dxflib::cadfile::parse_data()
 				current_entity = entities::entity_types::hatch;
 				continue;
 			}
+			if (cl == start_markers.text)
+			{
+				extraction_flag = true;
+				current_entity = entities::entity_types::text;
+				continue;
+			}
 		}
 		/*
 		 * Extraction Path
@@ -108,15 +115,18 @@ void dxflib::cadfile::parse_data()
 				if (lb.parse(cl, nl))
 					linenum++;
 				break;
-
 			case entities::entity_types::lwpolyline:
 				if (lwb.parse(cl, nl))
 					linenum++;
 				break;
-
 			case entities::entity_types::hatch:
 				if (hb.parse(cl, nl))
 					linenum++;
+				break;
+			case entities::entity_types::text:
+				if (tb.parse(cl, nl))
+					linenum++;
+				break;
 			default:
 				break;
 			}
@@ -133,19 +143,21 @@ void dxflib::cadfile::parse_data()
 				lb.free();
 				extraction_flag = false;
 				break;
-
 			case entities::entity_types::lwpolyline:
 				lwpolylines.emplace_back(lwb);
 				lwb.free();
 				extraction_flag = false;
 				break;
-
 			case entities::entity_types::hatch:
 				hatches.emplace_back(hb);
 				hb.free();
 				extraction_flag = false;
 				break;
-
+			case entities::entity_types::text:
+				basic_text.emplace_back(tb);
+				tb.free();
+				extraction_flag = false;
+				break;
 			case entities::entity_types::all:
 				break;
 			}
@@ -157,9 +169,10 @@ void dxflib::cadfile::linker()
 {
 	for (auto& hatch : hatches)
 	{
+		// If the hatch is explicitly not associated with a polyline then
+		// dont bother searching
 		if (!hatch.is_associated())
 			continue;
-
 		for (auto& polyline : lwpolylines)
 		{
 			if (hatch.get_soft_pointer() == polyline.get_handle())

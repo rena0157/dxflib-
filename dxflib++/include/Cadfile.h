@@ -3,6 +3,7 @@
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "entities/hatch.h"
 #include <vector>
+#include "entities/text.h"
 
 namespace dxflib
 {
@@ -22,6 +23,7 @@ namespace dxflib
 		std::vector<entities::line> lines;             // LINE Entities
 		std::vector<entities::lwpolyline> lwpolylines; // LWPOLYLINE Entities
 		std::vector<entities::hatch> hatches;          // HATCH Entities
+		std::vector<entities::text> basic_text;        // TEXT Entities
 
 		// Public Interface
 		std::string get_filename() const { return std::string{ filename_ }; } // Returns the filename of the cadfile
@@ -57,6 +59,7 @@ namespace dxflib
 			const char* line{ "LINE" };
 			const char* lwpolyline{ "LWPOLYLINE" };
 			const char* hatch{ "HATCH" };
+			const char* text{ "TEXT" };
 		};
 	}
 }

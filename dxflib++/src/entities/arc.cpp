@@ -2,26 +2,9 @@
 
 int dxflib::entities::arc_buffer::parse(const std::string& cl, const std::string& nl)
 {
-	if (entity_buffer_base::parse(cl, nl))
+	int code{entity_buffer_base::parse(cl, nl)}; // group code of the current line
+	if (code == -1)
 		return 1;
-
-	int code{}; // group code of the current line
-
-	// see if the current line is a group code
-	try
-	{
-		if (utilities::is_number(utilities::ltrim_copy(cl)))
-			code = std::stoi(cl);
-	}
-	catch(std::out_of_range&)
-	{
-		code = -1;
-	}
-	catch(std::invalid_argument&)
-	{
-		code = -1;
-	}
-
 	// Parse switch;
 	switch (static_cast<group_codes::arc>(code))
 	{
@@ -56,8 +39,9 @@ int dxflib::entities::arc_buffer::parse(const std::string& cl, const std::string
 	case group_codes::arc::is_ccw:
 		is_ccw = std::stoi(nl);
 		return 1;
+	default:
+		return 0;
 	}
-	return 0;
 }
 
 void dxflib::entities::arc_buffer::free()

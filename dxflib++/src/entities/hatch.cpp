@@ -4,26 +4,9 @@
 
 int dxflib::entities::hatch_buffer::parse(const std::string& cl, const std::string& nl)
 {
-	// call buffer base parse
-	if (entity_buffer_base::parse(cl, nl))
+	int code{ entity_buffer_base::parse(cl, nl) }; // Group code
+	if (code == -1)
 		return 1;
-
-	int code{ 0 }; // Group code
-
-	try
-	{
-		// convert current line to a group code
-		if (utilities::is_number(utilities::ltrim_copy(cl)))
-			code = std::stoi(cl);
-	}
-	catch(std::out_of_range&)
-	{
-		code = -1;
-	}
-	catch(std::invalid_argument&)
-	{
-		code = -1;
-	}
 	if (edge_type == null_edge_type)
 	{
 		// Parse tree
@@ -79,13 +62,22 @@ int dxflib::entities::hatch_buffer::parse(const std::string& cl, const std::stri
 			return 1;
 		case group_codes::hatch::offset_vector:
 			return 1;
+		case group_codes::hatch::pass1:
+			return 1;
 		default:
 			return 0;
 		}
 	}
-	// TODO: Need to come back to this
+
 	if (!is_associative)
 	{
+		/*
+		 * If the hatch is not associated with a polyling then extract the data relevant to 
+		 * build and parse geolines to calculated geometric data. There are different edge types defined
+		 * int AutoCAD DXF which are listed below. 
+		 */
+		// TODO: Add Ellipse data type
+		// TODO: Add Spline Data type
 		switch (static_cast<group_codes::boundary_paths>(edge_type))
 		{
 		case group_codes::boundary_paths::line:
@@ -98,8 +90,7 @@ int dxflib::entities::hatch_buffer::parse(const std::string& cl, const std::stri
 				return 1;
 			
 			case group_codes::line_path::ending_point_x:
-				x_values.push_back(std::stod(nl));
-				bulge_values.push_back(geoline::bulge_null);
+				// x_values.push_back(std::stod(nl));
 				return 1;
 
 			case group_codes::line_path::starting_point_y:
@@ -107,7 +98,7 @@ int dxflib::entities::hatch_buffer::parse(const std::string& cl, const std::stri
 				return 1;
 
 			case group_codes::line_path::ending_point_y:
-				y_values.push_back(std::stod(nl));
+				// y_values.push_back(std::stod(nl));
 				edge_type = null_edge_type;
 				return 1;
 
@@ -120,31 +111,50 @@ int dxflib::entities::hatch_buffer::parse(const std::string& cl, const std::stri
 			case group_codes::arc::center_point_x:
 				center_point_x = std::stod(nl);
 				return 1;
-
 			case group_codes::arc::center_point_y:
 				center_point_y = std::stod(nl);
 				return 1;
-
 			case group_codes::arc::center_point_z:
 				center_point_z = std::stod(nl);
 				return 1;
-
+			case group_codes::arc::radius:
+				radius = std::stod(nl);
+				return 1;
 			case group_codes::arc::start_angle:
 				start_angle = std::stod(nl);
-				x_values.push_back(center_point_x + radius * cos(mathlib::deg2_rad(start_angle)));
-				y_values.push_back(center_point_y + radius * sin(mathlib::deg2_rad(start_angle)));
 				return 1;
-
 			case group_codes::arc::end_angle:
 				end_angle = std::stod(nl);
-				x_values.push_back(center_point_x + radius * cos(mathlib::deg2_rad(end_angle)));
-				x_values.push_back(center_point_y + radius * cos(mathlib::deg2_rad(end_angle)));
-				bulge_values.push_back(tan(mathlib::deg2_rad(end_angle - start_angle)));
 				return 1;
-
 			case group_codes::arc::is_ccw:
 				is_ccw = std::stoi(nl);
-				edge_type = null_edge_type;
+
+				// After all the data is collected build the arc
+				if (is_ccw)
+				{
+					// Push back the x and y points as well as the bulge
+					x_values.push_back(center_point_x + radius * cos(
+						mathlib::deg2_rad(start_angle)));
+
+					y_values.push_back(center_point_y + radius * sin(
+						mathlib::deg2_rad(start_angle)));
+
+					bulge_values.push_back(tan(
+						mathlib::deg2_rad(end_angle - start_angle) / 4));
+				}
+				else
+				{
+					// if not ccw then subtract 2*pi from each angle
+					x_values.push_back(center_point_x + radius * cos(
+						2 * mathlib::pi - mathlib::deg2_rad(start_angle)));
+
+					y_values.push_back(center_point_y + radius * sin(
+						2 * mathlib::pi - mathlib::deg2_rad(start_angle)));
+
+					bulge_values.push_back(tan(
+						2 * mathlib::pi - mathlib::deg2_rad(end_angle - start_angle) / 4));
+				}
+				edge_type = null_edge_type; // Reset the edge type
 				return 1;
 			default: return 0;
 			}
@@ -179,6 +189,8 @@ dxflib::entities::hatch::hatch(hatch_buffer& hb):
 	hatch_pattern_(hb.hatch_pattern), is_solid_(hb.is_solid), is_associative_(hb.is_associative),
 	path_count_(hb.path_count), pattern_angle_(hb.pattern_angle), pattern_scale_(hb.pattern_scale)
 {
+	// If the hatch is not associated with an lwpolyling then the geometric data
+	// must be extracted from geolines that are parsed from the dxf file
 	if (!is_associative_)
 	{
 		geolines_ = { geoline::geoline_binder(

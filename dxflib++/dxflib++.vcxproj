@@ -150,6 +150,7 @@
     <ClInclude Include="include\entities\line.h" />
     <ClInclude Include="include\entities\lwpolyline.h" />
     <ClInclude Include="include\entities\point.h" />
+    <ClInclude Include="include\entities\text.h" />
     <ClInclude Include="include\mathlib.h" />
     <ClInclude Include="include\utilities.h" />
   </ItemGroup>
@@ -161,6 +162,7 @@
     <ClCompile Include="src\entities\line.cpp" />
     <ClCompile Include="src\entities\lwpolyline.cpp" />
     <ClCompile Include="src\entities\point.cpp" />
+    <ClCompile Include="src\entities\text.cpp" />
     <ClCompile Include="src\mathlib\vector.cpp" />
     <ClCompile Include="src\utilities\color.cpp" />
   </ItemGroup>

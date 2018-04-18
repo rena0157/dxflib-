@@ -16,6 +16,7 @@ namespace dxflib
 			line,
 			lwpolyline,
 			hatch,
+			text,
 			all
 		};
 

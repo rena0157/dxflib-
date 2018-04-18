@@ -1,8 +1,8 @@
 #pragma once
-#include "entity.h"
-#include "point.h"
-#include "lwpolyline.h"
-#include "arc.h"
+#include "dxflib++/include/entities/entity.h"
+#include "dxflib++/include/entities/point.h"
+#include "dxflib++/include/entities/lwpolyline.h"
+#include "dxflib++/include/entities/arc.h"
 
 namespace dxflib
 {
@@ -29,6 +29,7 @@ namespace dxflib
 				edge_count = 93,
 				seed_count = 98,
 				offset_vector = 11,
+				pass1 = 1070, // Ignore do to conflict
 			};
 
 			enum class boundary_paths
@@ -64,7 +65,7 @@ namespace dxflib
 			double pattern_scale{};
 
 			// Functions
-			int parse(const std::string& cl, const std::string& nl) override;
+			int parse(const std::string& cl, const std::string& nl) override; // Parse override 
 			void free() override;
 		};
 
@@ -118,11 +119,11 @@ namespace dxflib
 			int path_count_;                      // Number of boundary paths (loops)
 			double pattern_angle_;                // hatch pattern angle
 			double pattern_scale_;                // hatch pattern scale
-			double area_{};                      // Area of the hatch
-			double perimeter_{};                 // Perimeter of the hatch
-			lwpolyline * polyline_ptr_{nullptr}; // Pointer to a lwpolyline
-			std::vector<geoline> geolines_;      // geolines that are constructed if there is not lwpolyline* found
-			void calc_geometry();                // Calculate the area and perimeter
+			double area_{};                       // Area of the hatch
+			double perimeter_{};                  // Perimeter of the hatch
+			lwpolyline * polyline_ptr_{nullptr};  // Pointer to a lwpolyline
+			std::vector<geoline> geolines_;       // geolines that are constructed if there is not lwpolyline* found
+			void calc_geometry();                 // Calculate the area and perimeter
 		};
 	}
 }
