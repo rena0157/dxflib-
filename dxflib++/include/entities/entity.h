@@ -37,7 +37,17 @@ namespace dxflib
 			* \brief virtual parse function for the entity type: parses data from the dxf file
 			* \param cl Current Line
 			* \param nl Next Line
-			* \return Status -> 0:fail, 1:success
+			* \return returns -1 if the parse succeeded and another int if it failed
+			* 
+			* 
+			* Method:
+			* 
+			*	The parse function is a virtual function but is defined for the entity buffer base class
+			*	the buffer base class (bbc) function will look for data that it can extract. If it is not
+			*	able to extract anything it will return the group code to the child parse function. The child
+			*	parse function is structed very similary. If the child parse function then cannot find any link
+			*	the group code it will then return 0. If however, it does find something it will return 1 and
+			*	the next line in the dxf file will be skipped.
 			*/
 			virtual int parse(const std::string& cl, const std::string& nl);
 

@@ -60,22 +60,24 @@ void dxflib::cadfile::parse_data()
 {
 	// Loop Variables
 	entities::entity_types current_entity{entities::entity_types::line }; // Current Entity
-	bool extraction_flag{ false };                     // Extraction Flag
-	const group_codes::g_common gc;                    // Common Group Codes
-	const group_codes::start_markers start_markers;    // Line Group Codes
+	bool extraction_flag{ false };                                        // Extraction Flag
+	const group_codes::g_common gc;                                       // Common Group Codes - only contains the entity end marker
+	const group_codes::start_markers start_markers;                       // Line Group Codes
 
 	// Buffers
 	entities::line_buf lb;           // Line Buffer
 	entities::lwpolyline_buffer lwb; // Lwpolyline Buffer
 	entities::hatch_buffer hb;       // Hatch Buffer
-	entities::text_buffer tb;           // Text Buffer
+	entities::text_buffer tb;        // Text Buffer
 
 	for (int linenum{0}; linenum < static_cast<int>(data_.size()) - 1; ++linenum)
 	{
-		std::string& cl = data_[linenum];
-		std::string& nl = data_[linenum + 1];
+		std::string& cl = data_[linenum];     // The Current line in the data vector
+		std::string& nl = data_[linenum + 1]; // The Next line in the data vector
 		/*
-		 * Assignment Path
+		 * Assignment Path - First the current entity must be selected from a start marker found
+		 * if the DXF file. When the Start marker is found then the extraction flag is set to true
+		 * and the current entity is set.
 		 */
 		if (!extraction_flag)
 		{
@@ -105,7 +107,9 @@ void dxflib::cadfile::parse_data()
 			}
 		}
 		/*
-		 * Extraction Path
+		 * Extraction Path - While the extraction flag is true and the current entity
+		 * if know then this function will pass the current line and the next like of the
+		 * file to the respective entity parse function.
 		 */
 		if (extraction_flag)
 		{
@@ -132,7 +136,8 @@ void dxflib::cadfile::parse_data()
 			}
 		}
 		/*
-		 * Build Path
+		 * Build Path - once a end marker is reached the extraction flag is set back to 
+		 * false, the entity is constructed and placed into the proper constainer in the cadfile
 		 */
 		if (cl == gc.end_marker && extraction_flag)
 		{

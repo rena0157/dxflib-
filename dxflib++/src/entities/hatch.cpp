@@ -228,7 +228,7 @@ void dxflib::entities::hatch::calc_geometry()
 	for (const auto& line : geolines_)
 	{
 		total_length += line.get_length();
-		total_area += mathlib::trapz_area(line[0], line[1]);
+		total_area += line.get_area();
 	}
 
 	// set the total length of the polyline

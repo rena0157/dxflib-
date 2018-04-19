@@ -25,11 +25,13 @@ namespace dxflib
 				const std::vector<double>& y, const std::vector<double>& bulge, bool is_closed);
 
 			// Public Interface 
-			const vertex& operator[](int id) const;
-			vertex& operator[](int id);
-			double get_length() const;
-			double get_bulge() const { return bulge_; }
-
+			const vertex& operator[](int id) const;     // Returns a vertex of the geoline 0 or 1
+			vertex& operator[](int id);                 // Returns a vertex of the geoline 0 or 1
+			inline double get_length() const;           // Returns the length of the geoline
+			double get_bulge() const { return bulge_; } // Returns the bulge of the geoline
+			double get_area() const { return area_; }   // Returns the area between the geoline and the x-axis
+			inline double get_radius() const;           // Returns the radius of the geoline: INF if bulge == bulge_null
+			inline double get_angle() const;            // Returns the angle of the geoline: INF if bulge == bulge_null
 			friend std::ostream& operator<<(std::ostream& os, dxflib::entities::geoline& geoline);
 
 		protected:
@@ -37,6 +39,10 @@ namespace dxflib
 			vertex v0_;
 			vertex v1_;
 			double bulge_;
+			double length_;
+			double radius_;
+			double total_angle_;
+			double area_;
 		};
 
 		/**

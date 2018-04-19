@@ -1,4 +1,12 @@
 #pragma once
+/*
+ * dxflib++
+ * mathlib.h
+ * Purpose: To contain the prototypes of functions pertaining to mathematical utilities
+ *			that are used in the dxflib library
+ * 
+ * Author: Adam Renaud
+ */
 #include "entities/point.h"
 #include <cmath>
 
@@ -45,10 +53,36 @@ namespace dxflib
 			return v1.x - v0.x == 0 ? 0 : (v0.y + v1.y)*(v1.x - v0.x)/2;
 		}
 
+		/**
+		 * \brief Converts degrees to radians
+		 * \param deg angle to convert from degrees to radians
+		 * \return angle in radians
+		 */
 		inline double deg2_rad(const double deg) {return deg / 180 * pi;}
 
+		/**
+		 * \brief Converts radians to degrees
+		 * \param rad angle to convert from radians to degrees
+		 * \return angle in degrees
+		 */
 		inline double rad2_deg(const double rad) { return rad * 180 / pi; }
 
+		/**
+		 * \brief Calculates the area between an arc segment and a line that extends from
+		 * the starting vertex of the arc to the ending vertex of the arc. Note: total_angle
+		 * must be in radians
+		 * \param radius Radius of the arc
+		 * \param total_angle angle between both legs of the arc
+		 * \return area of the arc segment
+		 */
+		inline double chord_area(const double radius, const double total_angle)
+		{
+			return std::pow(radius, 2.0) / 2 * (total_angle - std::sin(total_angle));
+		}
+
+		/**
+		 * \brief Vector Base class
+		 */
 		class basic_vector
 		{
 		public:

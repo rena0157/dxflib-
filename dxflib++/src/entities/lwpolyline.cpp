@@ -1,19 +1,29 @@
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "dxflib++/include/mathlib.h"
-#include <cassert>
 #include <iostream>
 
 dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const double bulge):
 	v0_(v0), v1_(v1),
 	bulge_(bulge)
 {
-
+	if (bulge_ == bulge_null)
+	{
+		length_ = mathlib::distance(v0_, v1_);
+		area_ = mathlib::trapz_area(v0_, v1_);
+	}
+	else
+	{
+		length_ = mathlib::distance(v0_, v1_, bulge_);
+		total_angle_ = 4 * std::atan(bulge_);
+		radius_ = mathlib::distance(v0_, v1_) / (2 * std::sin(total_angle_ / 2));
+		area_ = mathlib::trapz_area(v0_, v1_) - mathlib::chord_area(radius_, total_angle_);
+	}
 }
 
 std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder(const std::vector<double>& x,
 	const std::vector<double>& y, const std::vector<double>& bulge, const bool is_closed)
 {
-	// TODO: Add logging if failure
+	// TODO: Add logging if exception is thrown
 	try
 	{
 		if (x.size() != y.size() || x.size() != bulge.size())
@@ -75,6 +85,18 @@ inline double dxflib::entities::geoline::get_length() const
 	if (bulge_ == bulge_null)
 		return mathlib::distance(v0_, v1_);
 	return mathlib::distance(v0_, v1_, bulge_);
+}
+
+inline double dxflib::entities::geoline::get_radius() const
+{
+	return bulge_ == static_cast<double>(bulge_null) ?
+		std::numeric_limits<double>::infinity() : radius_;
+}
+
+inline double dxflib::entities::geoline::get_angle() const
+{
+	return bulge_ == static_cast<double>(bulge_null) ?
+		std::numeric_limits<double>::infinity() : total_angle_;
 }
 
 int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std::string& nl)
