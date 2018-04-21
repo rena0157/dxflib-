@@ -74,10 +74,10 @@
     <ClCompile Include="src\entities\arc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mathlib\vector.cpp">
+    <ClCompile Include="src\entities\text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\entities\text.cpp">
+    <ClCompile Include="src\mathlib\vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
