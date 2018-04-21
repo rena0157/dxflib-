@@ -24,17 +24,8 @@ std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder
 	const std::vector<double>& y, const std::vector<double>& bulge, const bool is_closed)
 {
 	// TODO: Add logging if exception is thrown
-	try
-	{
-		if (x.size() != y.size() || x.size() != bulge.size())
-			throw std::invalid_argument("Vectos must be the same size");
-	}
-	catch(std::invalid_argument& e)
-	{
-		std::cerr << "Error(geoline_binder): " << e.what() << "\n";
-		return std::vector<geoline> {};
-	}
-	
+	if (x.size() != y.size() || x.size() != bulge.size())
+		throw std::invalid_argument("Vectos must be the same size");
 
 	// Geoline buffer
 	std::vector<geoline> geolines;
