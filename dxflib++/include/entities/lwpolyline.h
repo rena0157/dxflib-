@@ -1,8 +1,8 @@
 #pragma once
 #include "dxflib++/include/entities/point.h"
+#include "dxflib++/include/mathlib.h"
 #include "entity.h"
 #include <vector>
-#include "dxflib++/include/mathlib.h"
 
 namespace dxflib
 {
@@ -26,11 +26,13 @@ namespace dxflib
 				const std::vector<double>& y, const std::vector<double>& bulge, bool is_closed);
 
 			// Public Interface 
-			const vertex& operator[](int id) const;
-			vertex& operator[](int id);
-			double get_length() const;
-			double get_bulge() const { return bulge_; }
-
+			const vertex& operator[](int id) const;     // Returns a vertex of the geoline 0 or 1
+			vertex& operator[](int id);                 // Returns a vertex of the geoline 0 or 1
+			inline double get_length() const;           // Returns the length of the geoline
+			double get_bulge() const { return bulge_; } // Returns the bulge of the geoline
+			double get_area() const { return area_; }   // Returns the area between the geoline and the x-axis
+			inline double get_radius() const;           // Returns the radius of the geoline: INF if bulge == bulge_null
+			inline double get_angle() const;            // Returns the angle of the geoline: INF if bulge == bulge_null
 			friend std::ostream& operator<<(std::ostream& os, dxflib::entities::geoline& geoline);
 
 		protected:
@@ -38,6 +40,10 @@ namespace dxflib
 			vertex v0_;
 			vertex v1_;
 			double bulge_;
+			double length_;
+			double radius_;
+			double total_angle_;
+			double area_;
 		};
 
 		/**
@@ -60,9 +66,8 @@ namespace dxflib
 			};
 		}
 
-		struct lwpolyline_buffer : entity_buffer_base
+		struct lwpolyline_buffer : virtual entity_buffer_base
 		{
-			constexpr static int null_edge_type{ -1 };
 			// Geometric Properties
 			std::vector<double> x_values;
 			std::vector<double> y_values;
@@ -74,7 +79,6 @@ namespace dxflib
 			double starting_width{};
 			double ending_width{};
 			double width{};
-			int edge_type{null_edge_type};
 
 
 			// Parse function override
@@ -82,6 +86,7 @@ namespace dxflib
 			void free() override;
 		};
 
+		// ReSharper disable once CppPolymorphicClassWithNonVirtualPublicDestructor
 		class lwpolyline : public entity
 		{
 		public:
@@ -109,6 +114,8 @@ namespace dxflib
 			} 
 			void move_vertex(int id, const vertex& new_vertex); // Moves the vertex[id] to new location
 
+			// Other functions
+			bool within(const vertex& v) const;
 			friend std::ostream& operator<<(std::ostream& os, dxflib::entities::lwpolyline);
 
 		private:

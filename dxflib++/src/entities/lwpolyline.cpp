@@ -1,20 +1,40 @@
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "dxflib++/include/mathlib.h"
-#include "dxflib++/include/utilities.h"
-#include <cassert>
+#include <iostream>
 
 dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const double bulge):
 	v0_(v0), v1_(v1),
 	bulge_(bulge)
 {
-
+	if (bulge_ == bulge_null)
+	{
+		length_ = mathlib::distance(v0_, v1_);
+		area_ = mathlib::trapz_area(v0_, v1_);
+	}
+	else
+	{
+		length_ = mathlib::distance(v0_, v1_, bulge_);
+		total_angle_ = 4 * std::atan(bulge_);
+		radius_ = mathlib::distance(v0_, v1_) / (2 * std::sin(total_angle_ / 2));
+		area_ = mathlib::trapz_area(v0_, v1_) - mathlib::chord_area(radius_, total_angle_);
+	}
 }
 
 std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder(const std::vector<double>& x,
 	const std::vector<double>& y, const std::vector<double>& bulge, const bool is_closed)
 {
-	// TODO: Add logging if failure
-	assert(x.size() == y.size() && x.size() == bulge.size() && "Vectors must be the same size");
+	// TODO: Add logging if exception is thrown
+	try
+	{
+		if (x.size() != y.size() || x.size() != bulge.size())
+			throw std::invalid_argument("Vectos must be the same size");
+	}
+	catch(std::invalid_argument& e)
+	{
+		std::cerr << "Error(geoline_binder): " << e.what() << "\n";
+		return std::vector<geoline> {};
+	}
+	
 
 	// Geoline buffer
 	std::vector<geoline> geolines;
@@ -67,29 +87,23 @@ inline double dxflib::entities::geoline::get_length() const
 	return mathlib::distance(v0_, v1_, bulge_);
 }
 
+inline double dxflib::entities::geoline::get_radius() const
+{
+	return bulge_ == static_cast<double>(bulge_null) ?
+		std::numeric_limits<double>::infinity() : radius_;
+}
+
+inline double dxflib::entities::geoline::get_angle() const
+{
+	return bulge_ == static_cast<double>(bulge_null) ?
+		std::numeric_limits<double>::infinity() : total_angle_;
+}
+
 int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std::string& nl)
 {
-	// First send to the buffer base parse function 
-	if (entity_buffer_base::parse(cl, nl))
+	int code{entity_buffer_base::parse(cl, nl)}; // group code of the current line if one exists
+	if (code == -1)
 		return 1;
-
-	int code{}; // group code of the current line if one exists
-
-	// See if the current line is a group code
-	try
-	{
-		if (utilities::is_number(utilities::ltrim_copy(cl)))
-			code = std::stoi(cl);
-	}
-	catch (std::out_of_range&)
-	{
-		code = -1;
-	}
-	catch (std::invalid_argument&)
-	{
-		code = -1;
-	}
-
 	// parse swtich
 	switch (static_cast<group_codes::lwpolyline>(code))
 	{
@@ -173,6 +187,13 @@ void dxflib::entities::lwpolyline::move_vertex(const int id, const vertex& new_v
 {
 	lines_[id][0] = new_vertex;
 	calc_geometry();
+}
+
+bool dxflib::entities::lwpolyline::within(const vertex& v) const
+{
+	if (!is_closed_)
+		return false;
+	return mathlib::winding_num(lines_, v) != 0;
 }
 
 void dxflib::entities::lwpolyline::calc_geometry()

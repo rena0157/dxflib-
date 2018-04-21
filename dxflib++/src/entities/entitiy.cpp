@@ -14,7 +14,7 @@ int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std
 {
 	using namespace dxflib::entities::group_codes;
 	// Group code conversion
-	int code{-1};
+	int code{0};
 	try
 	{
 		if (dxflib::utilities::is_number(dxflib::utilities::ltrim_copy(cl)))
@@ -35,25 +35,27 @@ int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std
 	switch (static_cast<group_codes::entity_codes>(code))
 	{
 	case entity_codes::error:
-		return code;
+		return 0;
 	case entity_codes::layer:
 		layer = nl;
-		return 1;
+		return -1;
 	case entity_codes::handle:
 		handle = nl;
-		return 1;
+		return -1;
 	case entity_codes::soft_pointer:
 		if (nl != "1F")
 			soft_pointer = nl;
-		return 1;
+		return -1;
 	case entity_codes::color_name:
 		color_name = nl;
-		return 1;
+		return -1;
 	case entity_codes::raw_color:
 		raw_color = std::stoi(nl);
-		return 1;
+		return -1;
+	case entity_codes::ignore1:
+		return -1;
 	default:
-		return 0;
+		return code;
 	}
 }
 
@@ -88,7 +90,7 @@ dxflib::entities::entity::entity() : color(0), layer_(""),
 
 void dxflib::entities::entity::recalculate_geometry()
 {
-
+	// Not defined
 }
 
 

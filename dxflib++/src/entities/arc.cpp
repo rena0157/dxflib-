@@ -2,26 +2,9 @@
 
 int dxflib::entities::arc_buffer::parse(const std::string& cl, const std::string& nl)
 {
-	if (entity_buffer_base::parse(cl, nl))
+	int code{entity_buffer_base::parse(cl, nl)}; // group code of the current line
+	if (code == -1)
 		return 1;
-
-	int code{}; // group code of the current line
-
-	// see if the current line is a group code
-	try
-	{
-		if (utilities::is_number(utilities::ltrim_copy(cl)))
-			code = std::stoi(cl);
-	}
-	catch(std::out_of_range&)
-	{
-		code = -1;
-	}
-	catch(std::invalid_argument&)
-	{
-		code = -1;
-	}
-
 	// Parse switch;
 	switch (static_cast<group_codes::arc>(code))
 	{
@@ -52,6 +35,12 @@ int dxflib::entities::arc_buffer::parse(const std::string& cl, const std::string
 	case group_codes::arc::end_angle:
 		end_angle = std::stod(nl);
 		return 1;
+
+	case group_codes::arc::is_ccw:
+		is_ccw = std::stoi(nl);
+		return 1;
+	default:
+		return 0;
 	}
 }
 
@@ -64,9 +53,9 @@ void dxflib::entities::arc_buffer::free()
 }
 
 dxflib::entities::arc::arc(arc_buffer& ab):
-	center_point(ab.center_point_x, ab.center_point_y, ab.center_point_z),
-	radius(ab.radius), thickness(ab.thickness), start_angle(ab.start_angle),
-	end_angle(ab.end_angle), total_angle(end_angle - start_angle)
+	center_point_(ab.center_point_x, ab.center_point_y, ab.center_point_z),
+	radius_(ab.radius), thickness_(ab.thickness), start_angle_(ab.start_angle),
+	end_angle_(ab.end_angle), is_ccw_(ab.is_ccw)
 {
 	calc_other_points();
 }
