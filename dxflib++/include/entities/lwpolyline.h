@@ -1,5 +1,6 @@
 #pragma once
 #include "dxflib++/include/entities/point.h"
+#include "dxflib++/include/mathlib.h"
 #include "entity.h"
 #include <vector>
 
@@ -113,6 +114,8 @@ namespace dxflib
 			} 
 			void move_vertex(int id, const vertex& new_vertex); // Moves the vertex[id] to new location
 
+			// Other functions
+			bool within(const vertex& v) const;
 			friend std::ostream& operator<<(std::ostream& os, dxflib::entities::lwpolyline);
 
 		private:

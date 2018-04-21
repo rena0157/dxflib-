@@ -189,6 +189,13 @@ void dxflib::entities::lwpolyline::move_vertex(const int id, const vertex& new_v
 	calc_geometry();
 }
 
+bool dxflib::entities::lwpolyline::within(const vertex& v) const
+{
+	if (!is_closed_)
+		return false;
+	return mathlib::winding_num(lines_, v) != 0;
+}
+
 void dxflib::entities::lwpolyline::calc_geometry()
 {
 	double total_length{ 0 };

@@ -52,7 +52,7 @@ namespace dxflib::entities
 	/**
 	 * \brief text object 
 	 */
-	class text : entity
+	class text : public entity
 	{
 	public:
 

@@ -14,6 +14,7 @@
 namespace dxflib::entities
 {
 	class geoline;
+	class lwpolyline;
 }
 
 namespace dxflib::mathlib
@@ -102,7 +103,7 @@ namespace dxflib::mathlib
 	public:
 		explicit basic_vector(const entities::vertex& v0, const entities::vertex& v1);
 		explicit basic_vector(double x, double y, double z);
-		explicit basic_vector(dxflib::entities::geoline& gl);
+		explicit basic_vector(const dxflib::entities::geoline& gl);
 
 		// Public interface
 
@@ -155,5 +156,5 @@ namespace dxflib::mathlib
 		bool has_verticies_;
 	};
 
-
+	int winding_num(const std::vector<entities::geoline>& geolines, const entities::vertex& v);
 }
