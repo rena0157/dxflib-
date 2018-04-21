@@ -60,6 +60,7 @@ namespace dxflib
 			const char* lwpolyline{ "LWPOLYLINE" };
 			const char* hatch{ "HATCH" };
 			const char* text{ "TEXT" };
+			const char* mtext{ "MTEXT" };
 		};
 	}
 }

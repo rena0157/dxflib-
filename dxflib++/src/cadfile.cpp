@@ -99,7 +99,7 @@ void dxflib::cadfile::parse_data()
 				current_entity = entities::entity_types::hatch;
 				continue;
 			}
-			if (cl == start_markers.text)
+			if (cl == start_markers.text || cl == start_markers.mtext)
 			{
 				extraction_flag = true;
 				current_entity = entities::entity_types::text;
