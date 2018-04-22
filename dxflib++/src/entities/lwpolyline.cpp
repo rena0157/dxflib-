@@ -1,6 +1,5 @@
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "dxflib++/include/mathlib.h"
-#include <iostream>
 
 dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const double bulge):
 	v0_(v0), v1_(v1),
@@ -21,7 +20,9 @@ dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const dou
 }
 
 std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder(const std::vector<double>& x,
-	const std::vector<double>& y, const std::vector<double>& bulge, const bool is_closed)
+                                                                                 const std::vector<double>& y,
+                                                                                 const std::vector<double>& bulge,
+                                                                                 const bool is_closed)
 {
 	// TODO: Add logging if exception is thrown
 	if (x.size() != y.size() || x.size() != bulge.size())
@@ -30,20 +31,20 @@ std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder
 	// Geoline buffer
 	std::vector<geoline> geolines;
 
-	for (int pointnum{ 0 }; pointnum < static_cast<int>(x.size()) - 1; ++pointnum)
+	for (int pointnum{0}; pointnum < static_cast<int>(x.size()) - 1; ++pointnum)
 	{
 		const double b = bulge[pointnum];
 		const double x0 = x[pointnum];
 		const double x1 = x[pointnum + 1];
 		const double y0 = y[pointnum];
 		const double y1 = y[pointnum + 1];
-		geolines.emplace_back(vertex{ x0, y0 }, vertex{ x1, y1 }, b);
+		geolines.emplace_back(vertex{x0, y0}, vertex{x1, y1}, b);
 	}
 	// If the line is closed create one more line that extends from the last point to 
 	// the starting point
 	// BUG: Fails if x, y or bulge is empty
 	if (is_closed && !x.empty() && !y.empty() && !bulge.empty())
-		geolines.emplace_back(vertex{ x.back(), y.back() }, vertex{ x[0], y[0] }, bulge.back());
+		geolines.emplace_back(vertex{x.back(), y.back()}, vertex{x[0], y[0]}, bulge.back());
 	return geolines;
 }
 
@@ -81,14 +82,12 @@ inline double dxflib::entities::geoline::get_length() const
 
 inline double dxflib::entities::geoline::get_radius() const
 {
-	return bulge_ == static_cast<double>(bulge_null) ?
-		std::numeric_limits<double>::infinity() : radius_;
+	return bulge_ == static_cast<double>(bulge_null) ? std::numeric_limits<double>::infinity() : radius_;
 }
 
 inline double dxflib::entities::geoline::get_angle() const
 {
-	return bulge_ == static_cast<double>(bulge_null) ?
-		std::numeric_limits<double>::infinity() : total_angle_;
+	return bulge_ == static_cast<double>(bulge_null) ? std::numeric_limits<double>::infinity() : total_angle_;
 }
 
 int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std::string& nl)
@@ -154,9 +153,12 @@ int dxflib::entities::lwpolyline_buffer::parse(const std::string& cl, const std:
 void dxflib::entities::lwpolyline_buffer::free()
 {
 	// Vector clearing
-	x_values.clear(); x_values.shrink_to_fit();
-	y_values.clear(); y_values.shrink_to_fit();
-	bulge_values.clear(); bulge_values.shrink_to_fit();
+	x_values.clear();
+	x_values.shrink_to_fit();
+	y_values.clear();
+	y_values.shrink_to_fit();
+	bulge_values.clear();
+	bulge_values.shrink_to_fit();
 
 	// Property resetting
 	polyline_flag = false;
@@ -167,10 +169,16 @@ void dxflib::entities::lwpolyline_buffer::free()
 	entity_buffer_base::free();
 }
 
-dxflib::entities::lwpolyline::lwpolyline(lwpolyline_buffer& lwb) : entity(lwb),
-	vertex_count_(lwb.vertex_count), is_closed_(lwb.polyline_flag), elevation_(lwb.elevation),
-	starting_width_(lwb.starting_width), ending_width_(lwb.ending_width), width_(lwb.width),
-	lines_(geoline::geoline_binder(lwb.x_values, lwb.y_values, lwb.bulge_values, is_closed_))
+dxflib::entities::lwpolyline::lwpolyline(lwpolyline_buffer& lwb) :
+	entity(lwb),
+	vertex_count_(lwb.vertex_count),
+	is_closed_(lwb.polyline_flag),
+	elevation_(lwb.elevation),
+	starting_width_(lwb.starting_width),
+	ending_width_(lwb.ending_width), width_(lwb.width),
+	lines_(geoline::geoline_binder(
+		lwb.x_values, lwb.y_values, lwb.bulge_values,
+		is_closed_))
 {
 	calc_geometry();
 }
@@ -190,8 +198,8 @@ bool dxflib::entities::lwpolyline::within(const vertex& v) const
 
 void dxflib::entities::lwpolyline::calc_geometry()
 {
-	double total_length{ 0 };
-	double total_area{ 0 };
+	double total_length{0};
+	double total_area{0};
 
 	// iterate through all geolines and return a total length & area
 	for (auto& line : lines_)
@@ -212,13 +220,13 @@ void dxflib::entities::lwpolyline::calc_geometry()
 	area_ = abs(total_area);
 }
 
-std::ostream& dxflib::entities::operator<<(std::ostream& os, dxflib::entities::geoline& geoline)
+std::ostream& dxflib::entities::operator<<(std::ostream& os, geoline& geoline)
 {
 	os << "Start vertex: " << geoline.v0_ << ", End Vertex: " << geoline.v1_;
 	return os;
 }
 
-std::ostream& dxflib::entities::operator<<(std::ostream& os, dxflib::entities::lwpolyline lw)
+std::ostream& dxflib::entities::operator<<(std::ostream& os, lwpolyline lw)
 {
 	os << "Layer: " << lw.layer_ << "\n";
 	for (size_t i{0}; i < lw.lines_.size(); ++i)

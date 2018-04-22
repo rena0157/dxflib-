@@ -1,6 +1,7 @@
 #pragma once
 #include "dxflib++/include/entities/entity.h"
 #include "dxflib++/include/entities/point.h"
+#include "dxflib++/include/entities/lwpolyline.h"
 
 namespace dxflib::entities
 {
