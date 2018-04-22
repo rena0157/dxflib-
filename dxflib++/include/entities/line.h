@@ -57,15 +57,12 @@ namespace dxflib::entities
 		const vertex& get_vertex(int id) const; // Returns the vertex given by it's id
 		void move_vertex(int id, const vertex& new_vertex); // sets the vertex given by id to new location
 		double get_thickness() const { return thickness_; } // Returns the thickness of the line
-
+		lwpolyline to_lwpolyline() const; // Converts line to a lwpolyline
 	private:
 		// Properties
 		vertex v0_; // Starting Vertex
 		vertex v1_; // Ending Vertex
 		double thickness_; // Thickness of the line
 		double length_; // distance from v0 to v1
-
-		// Functions
-		void recalculate_geometry() override;
 	};
 }

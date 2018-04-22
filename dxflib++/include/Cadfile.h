@@ -2,8 +2,8 @@
 #include "dxflib++/include/entities/line.h"
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "entities/hatch.h"
-#include <vector>
 #include "entities/text.h"
+#include <vector>
 
 namespace dxflib
 {
@@ -34,7 +34,6 @@ namespace dxflib
 		const std::vector<std::string>& get_data() const { return data_; }
 
 	private:
-
 		// Entities
 		std::vector<entities::line> lines_; // LINE Entities
 		std::vector<entities::lwpolyline> lwpolylines_; // LWPOLYLINE Entities
