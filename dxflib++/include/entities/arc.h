@@ -18,6 +18,7 @@ namespace dxflib::entities
 			is_ccw = 73
 		};
 	}
+
 	struct arc_buffer : virtual entity_buffer_base
 	{
 		double center_point_x{};
@@ -45,29 +46,27 @@ namespace dxflib::entities
 
 		// Public Interface
 		// Get
-		const vertex& get_center_point() const { return center_point_; }     // Returns the Center Point
-		const vertex& get_start_point() const { return start_point_; }       // Returns the Start Point
-		const vertex& get_end_point() const { return end_point_; }           // Returns the End Point
-		double get_radius() const { return radius_; }                        // Returns the Radius
-		double get_thickness() const { return thickness_; }                  // Returns the Thickness
-		double get_start_angle() const { return start_angle_; }              // Returns the Starting Angle
-		double get_end_angle() const { return end_angle_; }                  // Returns the Final Angle
+		const vertex& get_center_point() const { return center_point_; } // Returns the Center Point
+		const vertex& get_start_point() const { return start_point_; } // Returns the Start Point
+		const vertex& get_end_point() const { return end_point_; } // Returns the End Point
+		double get_radius() const { return radius_; } // Returns the Radius
+		double get_thickness() const { return thickness_; } // Returns the Thickness
+		double get_start_angle() const { return start_angle_; } // Returns the Starting Angle
+		double get_end_angle() const { return end_angle_; } // Returns the Final Angle
 		double get_total_angle() const { return end_angle_ - start_angle_; } // Returns the Final Angle - Starting Angle
-		bool is_counterclock_wise() const { return is_ccw_; }                 // Retuens True if counterclock wise
+		bool is_counterclock_wise() const { return is_ccw_; } // Retuens True if counterclock wise
 
 	private:
 		// Properties
 		vertex center_point_; // Center point of the arc
-		vertex start_point_;  // Starting point of the arc
-		vertex end_point_;    // ending point of the arc
-		double radius_;       // radius of the arc
-		double thickness_;    // thickness of the line that is the arc
-		double start_angle_;  // starting angle in degrees
-		double end_angle_;    // ending angle in degrees
-		bool is_ccw_;          // True if the arc is counterclock wise
+		vertex start_point_; // Starting point of the arc
+		vertex end_point_; // ending point of the arc
+		double radius_; // radius of the arc
+		double thickness_; // thickness of the line that is the arc
+		double start_angle_; // starting angle in degrees
+		double end_angle_; // ending angle in degrees
+		bool is_ccw_; // True if the arc is counterclock wise
 
 		void calc_other_points();
 	};
 }
-
-

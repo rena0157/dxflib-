@@ -20,7 +20,7 @@ namespace dxflib::entities
 namespace dxflib::mathlib
 {
 	// Constants
-	constexpr static double pi{ 3.141592653589793 }; // The ratio between a circles diameter and its circumfrence
+	constexpr static double pi{3.141592653589793}; // The ratio between a circles diameter and its circumfrence
 
 	// Misc Geometric Functions
 
@@ -34,6 +34,7 @@ namespace dxflib::mathlib
 	{
 		return sqrt(pow(v1.x - v0.x, 2) + pow(v1.y - v0.y, 2) + pow(v1.z - v0.z, 2));
 	}
+
 	/**
 	 * \brief Calculates the distance between vertex v0 and vertex v1 - Bulge overload
 	 * \param v0 Starting Vertex
@@ -43,7 +44,7 @@ namespace dxflib::mathlib
 	 */
 	inline double distance(const entities::vertex& v0, const entities::vertex& v1, const double bulge)
 	{
-		return distance(v0, v1)/(2*sin(4*atan(bulge)/2))*4*atan(bulge);
+		return distance(v0, v1) / (2 * sin(4 * atan(bulge) / 2)) * 4 * atan(bulge);
 	}
 
 	/**
@@ -55,7 +56,7 @@ namespace dxflib::mathlib
 	 */
 	inline double trapz_area(const entities::vertex& v0, const entities::vertex& v1)
 	{
-		return v1.x - v0.x == 0 ? 0 : (v0.y + v1.y)*(v1.x - v0.x)/2;
+		return v1.x - v0.x == 0 ? 0 : (v0.y + v1.y) * (v1.x - v0.x) / 2;
 	}
 
 	/**
@@ -63,7 +64,7 @@ namespace dxflib::mathlib
 	 * \param deg angle to convert from degrees to radians
 	 * \return angle in radians
 	 */
-	inline double deg2_rad(const double deg) {return deg / 180 * pi;}
+	inline double deg2_rad(const double deg) { return deg / 180 * pi; }
 
 	/**
 	 * \brief Converts radians to degrees
@@ -91,10 +92,14 @@ namespace dxflib::mathlib
 		{
 			std::string message_;
 		public:
-			explicit no_associated_vertex(const char* message):message_(message){}
+			explicit no_associated_vertex(const char* message): message_(message)
+			{
+			}
+
 			char const* what() const override { return message_.c_str(); }
 		};
 	}
+
 	/**
 	 * \brief Vector Base class
 	 */
@@ -103,7 +108,7 @@ namespace dxflib::mathlib
 	public:
 		explicit basic_vector(const entities::vertex& v0, const entities::vertex& v1);
 		explicit basic_vector(double x, double y, double z);
-		explicit basic_vector(const dxflib::entities::geoline& gl);
+		explicit basic_vector(const entities::geoline& gl);
 
 		// Public interface
 
@@ -113,10 +118,10 @@ namespace dxflib::mathlib
 		 * This function can fail if is_free() is false: it will throw a no associated vertex exception
 		 */
 		const entities::vertex& operator[](int id) const;
-		entities::vertex& operator[](int id);            
+		entities::vertex& operator[](int id);
 
 		// Geometric Properties
-		double magnitude() const;       // Returns the magnitude of the vector
+		double magnitude() const; // Returns the magnitude of the vector
 		double x() const { return x_; } // Returns the x component
 		double y() const { return y_; } // Returns the y component
 		double z() const { return z_; } // Returns the z component
@@ -125,7 +130,7 @@ namespace dxflib::mathlib
 		// Mathematical Operations
 		inline basic_vector operator+(const basic_vector& v) const; // Returns a sum of vectors
 		inline basic_vector operator-(const basic_vector& v) const; // Returns a subtraction of vectors
-		
+
 		/**
 		 * \brief The dot product function
 		 * \param v0 vector 1
@@ -133,7 +138,7 @@ namespace dxflib::mathlib
 		 * \return the dot product of vector 1 and vector 2
 		 */
 		static double dot_product(const basic_vector& v0, const basic_vector& v1);
-		
+
 		/**
 		 * \brief The vector cross product function
 		 * Note: This will return a free vector (This vector will not be associated with

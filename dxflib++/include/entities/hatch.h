@@ -27,7 +27,8 @@ namespace dxflib::entities
 			edge_count = 93,
 			seed_count = 98,
 			offset_vector = 11,
-			pass1 = 1070, // Ignore do to conflict
+			pass1 = 1070,
+			// Ignore do to conflict
 		};
 
 		enum class boundary_paths
@@ -49,8 +50,8 @@ namespace dxflib::entities
 
 	struct hatch_buffer : lwpolyline_buffer, arc_buffer
 	{
-		constexpr static int null_edge_type{ -1 };
-		int edge_type{ null_edge_type };
+		constexpr static int null_edge_type{-1};
+		int edge_type{null_edge_type};
 		// Properties
 		double elevation_point_x{};
 		double elevation_point_y{};
@@ -94,35 +95,35 @@ namespace dxflib::entities
 
 		// Public Interface
 		// Get
-		const lwpolyline* get_lwpolyline() const;                               // Returns the pointer to a lwpolyline
-		double get_area() const;                                                // Returns the area of the hatch
-		double get_perimeter() const;                                           // Returns the Perimeter of the hatch
-		const vertex& get_elevation_point() const { return elevation_; }        // Returns the elevation of the hatch
+		const lwpolyline* get_lwpolyline() const; // Returns the pointer to a lwpolyline
+		double get_area() const; // Returns the area of the hatch
+		double get_perimeter() const; // Returns the Perimeter of the hatch
+		const vertex& get_elevation_point() const { return elevation_; } // Returns the elevation of the hatch
 		const std::string& get_hatch_pattern() const { return hatch_pattern_; } // Returns the hatch pattern name
-		bool is_solid() const { return is_solid_; }                             // Returns true if the hatch pattern is solid
-		bool is_associated() const { return is_associative_; }                  // Returns true if the hatch has an associated lwpolyline
-		int path_count() const { return path_count_; }                          // Returns the number of paths that are associated with the hatch
-		double get_pattern_angle() const { return pattern_angle_; }             // Returns the hatch pattern angle (Must be !solid)
-		double get_pattern_scale() const { return pattern_scale_; }             // Returns the hatch patter scale (Must be !solid) 
+		bool is_solid() const { return is_solid_; } // Returns true if the hatch pattern is solid
+		bool is_associated() const { return is_associative_; } // Returns true if the hatch has an associated lwpolyline
+		int path_count() const { return path_count_; } // Returns the number of paths that are associated with the hatch
+		double get_pattern_angle() const { return pattern_angle_; } // Returns the hatch pattern angle (Must be !solid)
+		double get_pattern_scale() const { return pattern_scale_; } // Returns the hatch patter scale (Must be !solid) 
 		// Set
-		void set_lwpolyline(lwpolyline* in) { polyline_ptr_ = in; }             // Sets the lwpolyline pointer of the hatch
+		void set_lwpolyline(lwpolyline* in) { polyline_ptr_ = in; } // Sets the lwpolyline pointer of the hatch
 		// Other functions
-		bool within(const vertex& v) const;                                     // Returns True if v is in hatch
+		bool within(const vertex& v) const; // Returns True if v is in hatch
 
 	private:
 		// Members
 		// General Properties
-		vertex elevation_;                    // Elevation point of the hatch
-		std::string hatch_pattern_;           // hatch pattern name
-		bool is_solid_;                       // true if hatch is solid fill
-		bool is_associative_;                 // true is the hatch has an associated lwpolyline
-		int path_count_;                      // Number of boundary paths (loops)
-		double pattern_angle_;                // hatch pattern angle
-		double pattern_scale_;                // hatch pattern scale
-		double area_{};                       // Area of the hatch
-		double perimeter_{};                  // Perimeter of the hatch
-		lwpolyline * polyline_ptr_{nullptr};  // Pointer to a lwpolyline
-		std::vector<geoline> geolines_;       // geolines that are constructed if there is not lwpolyline* found
-		void calc_geometry();                 // Calculate the area and perimeter
+		vertex elevation_; // Elevation point of the hatch
+		std::string hatch_pattern_; // hatch pattern name
+		bool is_solid_; // true if hatch is solid fill
+		bool is_associative_; // true is the hatch has an associated lwpolyline
+		int path_count_; // Number of boundary paths (loops)
+		double pattern_angle_; // hatch pattern angle
+		double pattern_scale_; // hatch pattern scale
+		double area_{}; // Area of the hatch
+		double perimeter_{}; // Perimeter of the hatch
+		lwpolyline* polyline_ptr_{nullptr}; // Pointer to a lwpolyline
+		std::vector<geoline> geolines_; // geolines that are constructed if there is not lwpolyline* found
+		void calc_geometry(); // Calculate the area and perimeter
 	};
 }

@@ -48,8 +48,12 @@ void dxflib::entities::arc_buffer::free()
 {
 	entity_buffer_base::free();
 	thickness = 0;
-	center_point_x = 0; center_point_y = 0; center_point_z = 0;
-	radius = 0; start_angle = 0; end_angle = 0;
+	center_point_x = 0;
+	center_point_y = 0;
+	center_point_z = 0;
+	radius = 0;
+	start_angle = 0;
+	end_angle = 0;
 }
 
 dxflib::entities::arc::arc(arc_buffer& ab):

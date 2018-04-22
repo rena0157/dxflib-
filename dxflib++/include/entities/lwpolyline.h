@@ -12,26 +12,27 @@ namespace dxflib::entities
 	class geoline
 	{
 	public:
-		static constexpr int bulge_null{ -2 };
+		static constexpr int bulge_null{-2};
 		/**
 		 * \brief Geometric line segment to be used as base for lwpolyline
 		 * \param v0 start vertex
 		 * \param v1 end vertex
 		 * \param bulge bulge value if arc segment
 		 */
-		explicit geoline(const vertex& v0, const vertex& v1, double bulge=bulge_null);
+		explicit geoline(const vertex& v0, const vertex& v1, double bulge = bulge_null);
 		static std::vector<geoline> geoline_binder(const std::vector<double>& x,
-			const std::vector<double>& y, const std::vector<double>& bulge, bool is_closed);
+		                                           const std::vector<double>& y, const std::vector<double>& bulge,
+		                                           bool is_closed);
 
 		// Public Interface 
-		const vertex& operator[](int id) const;     // Returns a vertex of the geoline 0 or 1
-		vertex& operator[](int id);                 // Returns a vertex of the geoline 0 or 1
-		inline double get_length() const;           // Returns the length of the geoline
+		const vertex& operator[](int id) const; // Returns a vertex of the geoline 0 or 1
+		vertex& operator[](int id); // Returns a vertex of the geoline 0 or 1
+		inline double get_length() const; // Returns the length of the geoline
 		double get_bulge() const { return bulge_; } // Returns the bulge of the geoline
-		double get_area() const { return area_; }   // Returns the area between the geoline and the x-axis
-		inline double get_radius() const;           // Returns the radius of the geoline: INF if bulge == bulge_null
-		inline double get_angle() const;            // Returns the angle of the geoline: INF if bulge == bulge_null
-		friend std::ostream& operator<<(std::ostream& os, dxflib::entities::geoline& geoline);
+		double get_area() const { return area_; } // Returns the area between the geoline and the x-axis
+		inline double get_radius() const; // Returns the radius of the geoline: INF if bulge == bulge_null
+		inline double get_angle() const; // Returns the angle of the geoline: INF if bulge == bulge_null
+		friend std::ostream& operator<<(std::ostream& os, geoline& geoline);
 
 	protected:
 		// Properties and members
@@ -90,43 +91,46 @@ namespace dxflib::entities
 	public:
 		// Constructors
 		explicit lwpolyline(lwpolyline_buffer&);
-		
+
 		// Public Interface
-		
+
 		// Get
-		int get_vertex_count() const { return vertex_count_; }           // Returns the Vertex Count
-		bool is_closed() const { return is_closed_; }                    // Returns True if the lwpolyline is closed
-		double get_elevation() const { return elevation_; }              // Returns the elevation of the lwpolyline
-		double get_starting_width() const { return starting_width_; }    // Returns the starting width of the lwpolyline
-		double get_ending_width() const { return ending_width_; }        // Returns the ending width of the lwpolyline
-		double get_width() const { return width_; }                      // Returns the Global Width of the lwpolyline
-		const std::vector<geoline>& get_lines() const { return lines_; } // Returns the geolines that the lwpolyline is made from
-		double get_length() const { return length_; }                    // Returns the length of the lwpolyline
-		double get_area() const { return area_; }                        // Returns the area of the lwpolyline
-		double is_drawn_ccw() const { return drawn_counter_clockwise_; } // Returns true if the polyline was drawn counterclock-wise
-		
+		int get_vertex_count() const { return vertex_count_; } // Returns the Vertex Count
+		bool is_closed() const { return is_closed_; } // Returns True if the lwpolyline is closed
+		double get_elevation() const { return elevation_; } // Returns the elevation of the lwpolyline
+		double get_starting_width() const { return starting_width_; } // Returns the starting width of the lwpolyline
+		double get_ending_width() const { return ending_width_; } // Returns the ending width of the lwpolyline
+		double get_width() const { return width_; } // Returns the Global Width of the lwpolyline
+		const std::vector<geoline>& get_lines() const { return lines_; }
+		// Returns the geolines that the lwpolyline is made from
+		double get_length() const { return length_; } // Returns the length of the lwpolyline
+		double get_area() const { return area_; } // Returns the area of the lwpolyline
+		double is_drawn_ccw() const { return drawn_counter_clockwise_; }
+		// Returns true if the polyline was drawn counterclock-wise
+
 		// Set
 		void set_elevation(const double new_elevation) // Sets the elevation of the lwpolyline
 		{
 			elevation_ = new_elevation;
-		} 
+		}
+
 		void move_vertex(int id, const vertex& new_vertex); // Moves the vertex[id] to new location
 
 		// Other functions
 		bool within(const vertex& v) const;
-		friend std::ostream& operator<<(std::ostream& os, dxflib::entities::lwpolyline);
+		friend std::ostream& operator<<(std::ostream& os, lwpolyline);
 
 	private:
 		// Properties
-		int vertex_count_;           // Total number of verticies in the polyline
-		bool is_closed_;             // returns true if the polyline is closed
-		double elevation_;           // elevation of the polyline
-		double starting_width_;      // the starting global width 
-		double ending_width_;        // the ending global width
-		double width_;               // the global width: only if starting width and ending width are 0
+		int vertex_count_; // Total number of verticies in the polyline
+		bool is_closed_; // returns true if the polyline is closed
+		double elevation_; // elevation of the polyline
+		double starting_width_; // the starting global width 
+		double ending_width_; // the ending global width
+		double width_; // the global width: only if starting width and ending width are 0
 		std::vector<geoline> lines_; // the component lines of the polyline
-		double length_{};            // total length of the polyline
-		double area_{};              // Total area of the polyline
+		double length_{}; // total length of the polyline
+		double area_{}; // Total area of the polyline
 		bool drawn_counter_clockwise_{};
 
 		/**

@@ -33,9 +33,12 @@ namespace dxflib::entities
 			subclassmarker = 100,
 			error = -1,
 			thickness = 39,
-			x0 = 10, x1 = 11,
-			y0 = 20, y1 = 21,
-			z0 = 30, z1 = 31,
+			x0 = 10,
+			x1 = 11,
+			y0 = 20,
+			y1 = 21,
+			z0 = 30,
+			z1 = 31,
 		};
 	}
 
@@ -50,20 +53,18 @@ namespace dxflib::entities
 		explicit line(line_buf&);
 
 		// public interface
-		const vertex& get_vertex(int id) const;             // Returns the vertex given by it's id
+		const vertex& get_vertex(int id) const; // Returns the vertex given by it's id
 		void move_vertex(int id, const vertex& new_vertex); // sets the vertex given by id to new location
 		double get_thickness() const { return thickness_; } // Returns the thickness of the line
 
 	private:
 		// Properties
-		vertex v0_;        // Starting Vertex
-		vertex v1_;        // Ending Vertex
+		vertex v0_; // Starting Vertex
+		vertex v1_; // Ending Vertex
 		double thickness_; // Thickness of the line
-		double length_;    // distance from v0 to v1
+		double length_; // distance from v0 to v1
 
 		// Functions
 		void recalculate_geometry() override;
 	};
 }
-
-

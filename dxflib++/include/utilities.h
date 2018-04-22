@@ -13,7 +13,7 @@ namespace dxflib::utilities
 	inline bool is_number(const std::string& str)
 	{
 		return !str.empty() && std::find_if(str.begin(),
-			str.end(), [](const char c) {return !isdigit(c); }) == str.end();
+		                                    str.end(), [](const char c) { return !isdigit(c); }) == str.end();
 	}
 
 	/**
@@ -22,7 +22,7 @@ namespace dxflib::utilities
 	 */
 	inline void ltrim(std::string& str)
 	{
-		str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](char c) {return !std::isspace(c); }));
+		str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](char c) { return !std::isspace(c); }));
 	}
 
 	/**
@@ -32,7 +32,7 @@ namespace dxflib::utilities
 	 */
 	inline std::string ltrim_copy(std::string str)
 	{
-		str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](char c) {return !std::isspace(c); }));
+		str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](char c) { return !std::isspace(c); }));
 		return str;
 	}
 
@@ -42,8 +42,8 @@ namespace dxflib::utilities
 	 */
 	inline void rtrim(std::string& str)
 	{
-		str.erase(std::find_if(str.rbegin(), str.rend(), [](char c) {return !std::isspace(c); }).base(), 
-			str.end());
+		str.erase(std::find_if(str.rbegin(), str.rend(), [](char c) { return !std::isspace(c); }).base(),
+		          str.end());
 	}
 
 	/**
@@ -52,7 +52,8 @@ namespace dxflib::utilities
 	 */
 	inline void trim(std::string& str)
 	{
-		rtrim(str); ltrim(str);
+		rtrim(str);
+		ltrim(str);
 	}
 
 	/**
@@ -62,7 +63,8 @@ namespace dxflib::utilities
 	 */
 	inline std::string trim(std::string str)
 	{
-		rtrim(str); ltrim(str);
+		rtrim(str);
+		ltrim(str);
 		return str;
 	}
 

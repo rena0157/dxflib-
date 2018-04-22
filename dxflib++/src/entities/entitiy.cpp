@@ -12,27 +12,27 @@ dxflib::entities::entity_buffer_base::~entity_buffer_base()
  */
 int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std::string& nl)
 {
-	using namespace dxflib::entities::group_codes;
+	using namespace group_codes;
 	// Group code conversion
 	int code{0};
 	try
 	{
-		if (dxflib::utilities::is_number(dxflib::utilities::ltrim_copy(cl)))
+		if (utilities::is_number(utilities::ltrim_copy(cl)))
 			code = std::stoi(cl);
 	}
-	catch(std::invalid_argument&)
+	catch (std::invalid_argument&)
 	{
 		// if failure then set to -1
 		code = -1;
 	}
-	catch(std::out_of_range&)
+	catch (std::out_of_range&)
 	{
 		// if failure then set to -1
 		code = -1;
 	}
 
 	// Switch on the code
-	switch (static_cast<group_codes::entity_codes>(code))
+	switch (static_cast<entity_codes>(code))
 	{
 	case entity_codes::error:
 		return 0;
@@ -65,10 +65,14 @@ int dxflib::entities::entity_buffer_base::parse(const std::string& cl, const std
 void dxflib::entities::entity_buffer_base::free()
 {
 	// Free memory in vetors
-	soft_pointer.clear(); soft_pointer.shrink_to_fit();
+	soft_pointer.clear();
+	soft_pointer.shrink_to_fit();
 
 	// Reset values to defaults
-	layer = ""; handle = ""; color_name = ""; raw_color = 0;
+	layer = "";
+	handle = "";
+	color_name = "";
+	raw_color = 0;
 }
 
 /**
@@ -77,21 +81,17 @@ void dxflib::entities::entity_buffer_base::free()
 */
 dxflib::entities::entity::entity(entity_buffer_base& eb) :
 	color(eb.raw_color), layer_(eb.layer), handle_(eb.handle),
-	soft_pointer_(eb.soft_pointer), color_name_(eb.color_name), 
+	soft_pointer_(eb.soft_pointer), color_name_(eb.color_name),
 	raw_color_(eb.raw_color)
 {
 }
 
-dxflib::entities::entity::entity() : color(0), layer_(""), 
-	handle_(""), soft_pointer_(""), raw_color_(0)
+dxflib::entities::entity::entity() : color(0), layer_(""),
+                                     handle_(""), soft_pointer_(""), raw_color_(0)
 {
-
 }
 
 void dxflib::entities::entity::recalculate_geometry()
 {
 	// Not defined
 }
-
-
-

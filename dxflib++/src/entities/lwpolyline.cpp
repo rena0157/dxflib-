@@ -41,7 +41,8 @@ std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder
 	}
 	// If the line is closed create one more line that extends from the last point to 
 	// the starting point
-	if (is_closed)
+	// BUG: Fails if x, y or bulge is empty
+	if (is_closed && !x.empty() && !y.empty() && !bulge.empty())
 		geolines.emplace_back(vertex{ x.back(), y.back() }, vertex{ x[0], y[0] }, bulge.back());
 	return geolines;
 }

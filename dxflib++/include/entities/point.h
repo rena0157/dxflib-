@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+
 namespace dxflib::entities
 {
 	/**
