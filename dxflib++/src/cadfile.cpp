@@ -30,7 +30,7 @@ void dxflib::cadfile::read_file()
 	{
 		// Preallocating memory
 		fs.seekg(0, std::istream::end);
-		const size_t size{ static_cast<size_t>(fs.tellg())/sizeof(int64_t) };
+		const size_t size{static_cast<size_t>(fs.tellg()) / sizeof(int64_t)};
 		fs.seekg(0, std::istream::beg);
 		data_.reserve(size);
 		// get data
@@ -41,8 +41,6 @@ void dxflib::cadfile::read_file()
 		fs.close();
 	}
 	else { throw std::ios::failure("File failed to open/read/close"); }
-
-
 }
 
 /**
@@ -51,9 +49,10 @@ void dxflib::cadfile::read_file()
 void dxflib::cadfile::parse_data()
 {
 	// Loop Variables
-	entities::entity_types current_entity{entities::entity_types::line }; // Current Entity
-	bool extraction_flag{ false };                                        // Extraction Flag
-	const group_codes::g_common gc;                                       // Common Group Codes - only contains the entity end marker
+	entities::entity_types current_entity{entities::entity_types::line}; // Current Entity
+	bool extraction_flag{false};                                        // Extraction Flag
+	const group_codes::g_common
+		gc;                                       // Common Group Codes - only contains the entity end marker
 	const group_codes::start_markers start_markers;                       // Line Group Codes
 
 	// Buffers
@@ -136,22 +135,22 @@ void dxflib::cadfile::parse_data()
 			switch (current_entity)
 			{
 			case entities::entity_types::line:
-				lines.emplace_back(lb);
+				lines_.emplace_back(lb);
 				lb.free();
 				extraction_flag = false;
 				break;
 			case entities::entity_types::lwpolyline:
-				lwpolylines.emplace_back(lwb);
+				lwpolylines_.emplace_back(lwb);
 				lwb.free();
 				extraction_flag = false;
 				break;
 			case entities::entity_types::hatch:
-				hatches.emplace_back(hb);
+				hatches_.emplace_back(hb);
 				hb.free();
 				extraction_flag = false;
 				break;
 			case entities::entity_types::text:
-				basic_text.emplace_back(tb);
+				basic_text_.emplace_back(tb);
 				tb.free();
 				extraction_flag = false;
 				break;
@@ -162,15 +161,16 @@ void dxflib::cadfile::parse_data()
 	}
 }
 
+
 void dxflib::cadfile::linker()
 {
-	for (auto& hatch : hatches)
+	for (auto& hatch : hatches_)
 	{
 		// If the hatch is explicitly not associated with a polyline then
 		// dont bother searching
 		if (!hatch.is_associated())
 			continue;
-		for (auto& polyline : lwpolylines)
+		for (auto& polyline : lwpolylines_)
 		{
 			if (hatch.get_soft_pointer() == polyline.get_handle())
 				hatch.set_lwpolyline(&polyline);

@@ -1,5 +1,6 @@
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "dxflib++/include/mathlib.h"
+#include "dxflib++/include/entities/line.h"
 
 dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const double bulge):
 	v0_(v0), v1_(v1),
@@ -183,6 +184,16 @@ dxflib::entities::lwpolyline::lwpolyline(lwpolyline_buffer& lwb) :
 	calc_geometry();
 }
 
+dxflib::entities::lwpolyline::lwpolyline(const line& l):
+	entity(l),  // NOLINT(cppcoreguidelines-slicing)
+	vertex_count_(2), is_closed_(false),
+	elevation_((l.get_vertex(0).z + l.get_vertex(1).z) / 2),
+	starting_width_(0), ending_width_(0), width_(l.get_thickness())
+{
+	lines_.emplace_back(l.get_vertex(0), l.get_vertex(1), geoline::bulge_null);
+	calc_geometry();
+}
+
 void dxflib::entities::lwpolyline::move_vertex(const int id, const vertex& new_vertex)
 {
 	lines_[id][0] = new_vertex;
@@ -205,7 +216,7 @@ void dxflib::entities::lwpolyline::calc_geometry()
 	for (auto& line : lines_)
 	{
 		total_length += line.get_length();
-		total_area += mathlib::trapz_area(line[0], line[1]);
+		total_area += line.get_area();
 	}
 
 	// set the total length of the polyline

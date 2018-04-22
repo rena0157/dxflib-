@@ -85,13 +85,15 @@ namespace dxflib::entities
 		void free() override;
 	};
 
+	class line;
+
 	// ReSharper disable once CppPolymorphicClassWithNonVirtualPublicDestructor
 	class lwpolyline : public entity
 	{
 	public:
 		// Constructors
 		explicit lwpolyline(lwpolyline_buffer&);
-
+		explicit lwpolyline(const line& l);
 		// Public Interface
 
 		// Get
@@ -137,6 +139,5 @@ namespace dxflib::entities
 		 * \brief Function that calculates the total length & area of the polyline
 		 */
 		void calc_geometry();
-		void recalculate_geometry() override { calc_geometry(); }
 	};
 }

@@ -80,18 +80,20 @@ void dxflib::entities::entity_buffer_base::free()
 * \param eb entity buffer base struct
 */
 dxflib::entities::entity::entity(entity_buffer_base& eb) :
-	color(eb.raw_color), layer_(eb.layer), handle_(eb.handle),
-	soft_pointer_(eb.soft_pointer), color_name_(eb.color_name),
-	raw_color_(eb.raw_color)
+	layer_(eb.layer), handle_(eb.handle), soft_pointer_(eb.soft_pointer),
+	color_name_(eb.color_name), raw_color_(eb.raw_color),
+	color_(eb.raw_color)
 {
 }
 
-dxflib::entities::entity::entity() : color(0), layer_(""),
-                                     handle_(""), soft_pointer_(""), raw_color_(0)
+dxflib::entities::entity::entity() :
+	layer_(""), handle_(""),
+	soft_pointer_(""), raw_color_(0), color_(0)
 {
 }
 
-void dxflib::entities::entity::recalculate_geometry()
+dxflib::entities::entity::entity(const entity& e):
+	layer_(e.layer_), handle_(e.handle_), soft_pointer_(e.soft_pointer_),
+	raw_color_(e.raw_color_), color_(raw_color_)
 {
-	// Not defined
 }
