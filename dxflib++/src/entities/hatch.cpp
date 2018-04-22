@@ -219,6 +219,17 @@ double dxflib::entities::hatch::get_perimeter() const
 	return polyline_ptr_ == nullptr ? perimeter_ : polyline_ptr_->get_length();
 }
 
+bool dxflib::entities::hatch::within(const vertex& v) const
+{
+	if (is_associative_ && polyline_ptr_ != nullptr)
+	{
+		if (!polyline_ptr_->is_closed())
+			return false;
+		return polyline_ptr_->within(v);
+	}
+	return mathlib::winding_num(geolines_, v);
+}
+
 void dxflib::entities::hatch::calc_geometry()
 {
 	double total_length{ 0 };

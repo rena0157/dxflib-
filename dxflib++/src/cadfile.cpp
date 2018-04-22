@@ -2,10 +2,8 @@
 #include "dxflib++/include/entities/entity.h"
 #include "dxflib++/include/entities/line.h"
 #include "dxflib++/include/entities/lwpolyline.h"
-#include "dxflib++/include/utilities.h"
 #include "dxflib++/include/entities/text.h"
 #include <fstream>
-#include <iostream>
 #include <string>
 
 /**
@@ -27,30 +25,24 @@ void dxflib::cadfile::read_file()
 {
 	std::ifstream fs;
 
-	try
+	fs.open(filename_);
+	if (fs.good())
 	{
-		fs.open(filename_);
-		if (fs.good())
+		// Preallocating memory
+		fs.seekg(0, std::istream::end);
+		const size_t size{ static_cast<size_t>(fs.tellg())/sizeof(int64_t) };
+		fs.seekg(0, std::istream::beg);
+		data_.reserve(size);
+		// get data
+		for (std::string line; std::getline(fs, line);)
 		{
-			// Preallocating memory
-			fs.seekg(0, std::istream::end);
-			const size_t size{ static_cast<size_t>(fs.tellg())/sizeof(int64_t) };
-			fs.seekg(0, std::istream::beg);
-			data_.reserve(size);
-			// get data
-			for (std::string line; std::getline(fs, line);)
-			{
-				data_.push_back(std::move(line));
-			}
-			fs.close();
+			data_.push_back(std::move(line));
 		}
-		else { throw std::ios::failure("File failed to open/read/close"); }
-	}
-	catch (std::ios::failure& e)
-	{
-		std::cerr << e.code() << " Error: " << e.what();
 		fs.close();
 	}
+	else { throw std::ios::failure("File failed to open/read/close"); }
+
+
 }
 
 /**
