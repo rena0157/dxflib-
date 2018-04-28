@@ -8,6 +8,7 @@
  * Author: Adam Renaud
  */
 #include "entities/point.h"
+#include <vector>
 #include <cmath>
 
 // Predeclareation of geolines

@@ -14,6 +14,7 @@ namespace dxflib::entities
 		lwpolyline,
 		hatch,
 		text,
+		arc,
 		all
 	};
 

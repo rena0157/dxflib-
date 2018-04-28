@@ -3,6 +3,7 @@
 #include "dxflib++/include/entities/line.h"
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "dxflib++/include/entities/text.h"
+#include "dxflib++/include/entities/arc.h"
 #include <fstream>
 #include <string>
 
@@ -40,7 +41,11 @@ void dxflib::cadfile::read_file()
 		}
 		fs.close();
 	}
-	else { throw std::ios::failure("File failed to open/read/close"); }
+	else
+	{
+		fs.close();
+		throw std::ios::failure("File failed to open/read/close");
+	}
 }
 
 /**
@@ -50,16 +55,16 @@ void dxflib::cadfile::parse_data()
 {
 	// Loop Variables
 	entities::entity_types current_entity{entities::entity_types::line}; // Current Entity
-	bool extraction_flag{false};                                        // Extraction Flag
-	const group_codes::g_common
-		gc;                                       // Common Group Codes - only contains the entity end marker
-	const group_codes::start_markers start_markers;                       // Line Group Codes
+	bool extraction_flag{false};    // Extraction Flag
+	const group_codes::g_common gc; // Common Group Codes - only contains the entity end marker
+	const group_codes::start_markers start_markers; // Line Group Codes
 
 	// Buffers
 	entities::line_buf lb;           // Line Buffer
 	entities::lwpolyline_buffer lwb; // Lwpolyline Buffer
 	entities::hatch_buffer hb;       // Hatch Buffer
 	entities::text_buffer tb;        // Text Buffer
+	entities::arc_buffer ab;
 
 	for (int linenum{0}; linenum < static_cast<int>(data_.size()) - 1; ++linenum)
 	{
@@ -96,6 +101,12 @@ void dxflib::cadfile::parse_data()
 				current_entity = entities::entity_types::text;
 				continue;
 			}
+			if (cl == start_markers.arc)
+			{
+				extraction_flag = true;
+				current_entity = entities::entity_types::arc;
+				continue;
+			}
 		}
 		/*
 		 * Extraction Path - While the extraction flag is true and the current entity
@@ -122,6 +133,9 @@ void dxflib::cadfile::parse_data()
 				if (tb.parse(cl, nl))
 					linenum++;
 				break;
+			case entities::entity_types::arc:
+				if (ab.parse(cl, nl))
+					linenum++;
 			default:
 				break;
 			}
@@ -152,6 +166,11 @@ void dxflib::cadfile::parse_data()
 			case entities::entity_types::text:
 				basic_text_.emplace_back(tb);
 				tb.free();
+				extraction_flag = false;
+				break;
+			case entities::entity_types::arc:
+				arcs_.emplace_back(ab);
+				ab.free();
 				extraction_flag = false;
 				break;
 			case entities::entity_types::all:

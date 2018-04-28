@@ -266,3 +266,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/enc_temp_folder/c75f41822a16d8f7247a2a692f8213d/cadfile.cpp
