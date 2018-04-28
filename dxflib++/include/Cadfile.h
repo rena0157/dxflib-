@@ -24,8 +24,7 @@ namespace dxflib
 		const std::vector<entities::line>& get_lines() const { return lines_; }
 		std::vector<entities::line> get_lines() { return lines_; }
 		// lwpolylines
-		const std::vector<entities::lwpolyline>& get_lwpolylines() const { return lwpolylines_; }
-		std::vector<entities::lwpolyline> get_lwpolylines() { return lwpolylines_; }
+		std::vector<entities::lwpolyline>& get_lwpolylines() { return lwpolylines_; }
 		// hatches
 		std::vector<entities::hatch>& get_hatches() { return hatches_; }
 		// Text
