@@ -27,11 +27,9 @@ namespace dxflib
 		const std::vector<entities::lwpolyline>& get_lwpolylines() const { return lwpolylines_; }
 		std::vector<entities::lwpolyline> get_lwpolylines() { return lwpolylines_; }
 		// hatches
-		const std::vector<entities::hatch>& get_hatches() const { return hatches_; }
-		std::vector<entities::hatch> get_hatches() { return hatches_; }
+		std::vector<entities::hatch>& get_hatches() { return hatches_; }
 		// Text
-		const std::vector<entities::text>& get_text() const { return basic_text_; }
-		std::vector<entities::text> get_text() { return basic_text_; }
+		std::vector<entities::text>& get_text() { return basic_text_; }
 		// Arc
 		const std::vector<entities::arc>& get_arcs() const { return arcs_; }
 		// Filename of the DXF file
