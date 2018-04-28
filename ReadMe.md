@@ -59,6 +59,20 @@ methods:
 
 ##### LINE
 
+**Derived Class**\
+`class line : public` [`entity`](#entity);
+
+LINE is the DxfLib++ library implementation of the LINE entity in AutoCAD DXF. The line entity is a 3D line that
+is defined by two points.
+
+#### Members and Methods
+
+##### `Constructors` 
+- `explicit line(line_buf&)`: Default dxf line constructor
+
+##### `Public Methods`
+
+
 ```
 #include "dxflib++/cadfile.h"
 
