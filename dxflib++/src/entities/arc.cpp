@@ -73,13 +73,6 @@ dxflib::entities::arc::arc(arc_buffer& ab): entity(ab),
 	calc_other_points();
 }
 
-dxflib::entities::arc::arc(const arc& other):  // NOLINT(hicpp-use-equals-default)
-	entity(other), center_point_(other.center_point_), start_point_(other.start_point_),
-	end_point_(other.end_point_), radius_(other.radius_), thickness_(other.thickness_),
-	start_angle_(other.start_angle_), end_angle_(other.end_angle_), is_ccw_(other.is_ccw_)
-{
-}
-
 void dxflib::entities::arc::calc_other_points()
 {
 	start_point_ = vertex{
