@@ -32,6 +32,8 @@ namespace dxflib
 		// Text
 		const std::vector<entities::text>& get_text() const { return basic_text_; }
 		std::vector<entities::text> get_text() { return basic_text_; }
+		// Arc
+		const std::vector<entities::arc>& get_arcs() const { return arcs_; }
 		// Filename of the DXF file
 		std::string get_filename() const { return std::string{filename_}; }
 		// DXF Data

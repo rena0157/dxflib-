@@ -43,6 +43,7 @@ namespace dxflib::entities
 	public:
 		// Constructor
 		explicit arc(arc_buffer& ab);
+		arc(const arc& other);
 
 		// Public Interface
 		// Get

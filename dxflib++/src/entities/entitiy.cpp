@@ -86,12 +86,6 @@ dxflib::entities::entity::entity(entity_buffer_base& eb) :
 {
 }
 
-dxflib::entities::entity::entity() :
-	layer_(""), handle_(""),
-	soft_pointer_(""), raw_color_(0), color_(0)
-{
-}
-
 dxflib::entities::entity::entity(const entity& e):
 	layer_(e.layer_), handle_(e.handle_), soft_pointer_(e.soft_pointer_),
 	raw_color_(e.raw_color_), color_(raw_color_)

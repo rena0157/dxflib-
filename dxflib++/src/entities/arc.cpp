@@ -65,12 +65,19 @@ void dxflib::entities::arc_buffer::free()
 	end_angle = 0;
 }
 
-dxflib::entities::arc::arc(arc_buffer& ab):
+dxflib::entities::arc::arc(arc_buffer& ab): entity(ab),
 	center_point_(ab.center_point_x, ab.center_point_y, ab.center_point_z),
 	radius_(ab.radius), thickness_(ab.thickness), start_angle_(ab.start_angle),
 	end_angle_(ab.end_angle), is_ccw_(ab.is_ccw)
 {
 	calc_other_points();
+}
+
+dxflib::entities::arc::arc(const arc& other):  // NOLINT(hicpp-use-equals-default)
+	entity(other), center_point_(other.center_point_), start_point_(other.start_point_),
+	end_point_(other.end_point_), radius_(other.radius_), thickness_(other.thickness_),
+	start_angle_(other.start_angle_), end_angle_(other.end_angle_), is_ccw_(other.is_ccw_)
+{
 }
 
 void dxflib::entities::arc::calc_other_points()

@@ -85,7 +85,6 @@ namespace dxflib::entities
 	public:
 		// Constructor
 		explicit entity(entity_buffer_base&);
-		explicit entity();
 		explicit entity(const entity&);
 		// public interface
 		const std::string& get_handle() const { return handle_; } // Returns the entity handle
