@@ -1,7 +1,9 @@
 #pragma once
 #include <ostream>
+
 namespace dxflib::entities
 {
+	class lwpolyline;
 	/**
 	* \brief point base class
 	*/
@@ -26,5 +28,6 @@ namespace dxflib::entities
 		* \param z z position
 		*/
 		explicit vertex(double x = 0, double y = 0, double z = 0);
+		bool within(const lwpolyline& pl) const;
 	};
 }
