@@ -25,7 +25,7 @@ C++ classes.
 - MTEXT
 
 
-## Entity Documentation
+## Entities
 
 ### Entity <a name="entity"></a>
 
@@ -57,22 +57,35 @@ methods:
 - `int raw_color_;`: raw color of the entity. Extracted from a 24-bit hex color code
 - `utilities::color color_`: Color of the entity. The custom color class is used here.
 
-##### LINE
+### LINE
 
 **Derived Class**\
 `class line : public` [`entity`](#entity);
 
-LINE is the DxfLib++ library implementation of the LINE entity in AutoCAD DXF. The line entity is a 3D line that
-is defined by two points.
+LINE is the DxfLib++ library implementation of the LINE entity in AutoCAD DXF. 
+The line entity is a 3D line that is defined by two points.
 
 #### Members and Methods
 
 ##### `Constructors` 
 - `explicit line(line_buf&)`: Default dxf line constructor
 
-##### `Public Methods`
+##### `Public Members`
+- `const vertex& get_vertex(int id) const;`: returns
+- `void move_vertex(int id, const vertex& new_vertex);`: moves the vertex(`id`) to\
+a new position(`new_vertex`). The Line will then update the `length_`.
+- `double get_thickness() const;`: returns the thickness of the line
+- `lwpolyline to_lwpolyline() const;` converts the line into a `lwpolyline` and then \
+returns a copy of that `lwpolyline`. Note: Depending on the implementation and optimization\
+The new `lwpolyline` might be moved to the new location.
 
+##### `Private Members`
+- `vertex v0_;`: The starting vertex of the line.
+- `vertex v1_;`: The ending vertex of the line.
+- `double thickness_;` The thickness of the line.
+- `double length_;`: The total length of the line from `v0_` to `v1_`
 
+#### Example:
 ```
 #include "dxflib++/cadfile.h"
 
@@ -85,4 +98,6 @@ int main()
 	dxflib::entities::line line {c_file.get_lines()[0]};
 }
 ```
+### Geoline
+
 
