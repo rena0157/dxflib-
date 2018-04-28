@@ -16,12 +16,11 @@ for (const auto& hatch : c_file.get_hatches())
 DxfLib++ is a library that parses and extracts data from AutoCAD dxf files and builds them into
 C++ classes.
 
-#### Entities
-- [Entity](#entity): Entity Base Class
-- [Vertex](#vertex): Cartesian coordinate vector 
-- [LINE](#line): AutoCAD LINE Entity
-- [Geoline](#geoline): Geometric Line
-- LWPOLYLINE: 
+#### AutoCAD Entities Currently Supported
+- [Entity](#entity)
+- [Vertex](#vertex)
+- [LINE](#line)
+- LWPOLYLINE
 - HATCH
 - TEXT
 - MTEXT
