@@ -101,7 +101,7 @@ namespace dxflib::entities
 		const vertex& get_elevation_point() const { return elevation_; } // Returns the elevation of the hatch
 		const std::string& get_hatch_pattern() const { return hatch_pattern_; } // Returns the hatch pattern name
 		bool is_solid() const { return is_solid_; } // Returns true if the hatch pattern is solid
-		bool is_associated() const { return is_associative_; } // Returns true if the hatch has an associated lwpolyline
+		bool is_associated() const { return polyline_ptr_ != nullptr; } // Returns true if the hatch has an associated lwpolyline
 		int path_count() const { return path_count_; } // Returns the number of paths that are associated with the hatch
 		double get_pattern_angle() const { return pattern_angle_; } // Returns the hatch pattern angle (Must be !solid)
 		double get_pattern_scale() const { return pattern_scale_; } // Returns the hatch patter scale (Must be !solid) 
