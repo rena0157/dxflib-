@@ -22,12 +22,16 @@ namespace dxflib
 		// Public Interface
 		// Lines
 		const std::vector<entities::line>& get_lines() const { return lines_; }
+		std::vector<entities::line> get_lines() { return lines_; }
 		// lwpolylines
 		const std::vector<entities::lwpolyline>& get_lwpolylines() const { return lwpolylines_; }
+		std::vector<entities::lwpolyline> get_lwpolylines() { return lwpolylines_; }
 		// hatches
 		const std::vector<entities::hatch>& get_hatches() const { return hatches_; }
+		std::vector<entities::hatch> get_hatches() { return hatches_; }
 		// Text
 		const std::vector<entities::text>& get_text() const { return basic_text_; }
+		std::vector<entities::text> get_text() { return basic_text_; }
 		// Filename of the DXF file
 		std::string get_filename() const { return std::string{filename_}; }
 		// DXF Data
