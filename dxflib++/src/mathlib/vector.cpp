@@ -1,5 +1,6 @@
 #include "dxflib++/include/mathlib.h"
 #include "dxflib++/include/entities/lwpolyline.h"
+#include "dxflib++/include/entities/line.h"
 
 dxflib::mathlib::basic_vector::basic_vector(const entities::vertex& v0, const entities::vertex& v1):
 	v0_(v0), v1_(v1), x_(v1_.x - v0_.x), y_(v1_.y - v0_.y), z_(v1.z - v0.z), has_verticies_(true)
@@ -105,11 +106,14 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 	for (const auto& line : geolines)
 	{
 		const basic_vector line_vector{line};
-		if (line[0].y > v.y && line[1].y > v.y) // Line is above
+		bool in_arc{ false };
+		if (line.get_bulge() != entities::geoline::bulge_null)
+			in_arc = is_within_arc(line[0], v, line[1], line.get_angle());
+		if (line[0].y > v.y && line[1].y > v.y && !in_arc) // Line is above
 			continue;
-		if (line[0].y < v.y && line[1].y < v.y) // Line is below
+		if (line[0].y < v.y && line[1].y < v.y && !in_arc) // Line is below
 			continue;
-		if (line[0].x < v.x && line[1].x < v.x) // Line is to the right
+		if (line[0].x < v.x && line[1].x < v.x && !in_arc) // Line is to the right
 			continue;
 
 		const basic_vector x_unit_vector{1, 0, 0}; // Unit vector in the x direction
@@ -134,7 +138,7 @@ bool dxflib::mathlib::is_within_arc(const entities::vertex& p1, const entities::
 	const double phi_2{basic_vector::dot_product(p2_p, p2_p1) / (p2_p.magnitude() * p2_p1.magnitude())};
 
 	const double sum{phi_1 + phi_2};
-	return sum > 0 && sum < total_angle / 2;
+	return sum > 0 && sum < abs(total_angle / 2);
 }
 
 std::ostream& dxflib::mathlib::operator<<(std::ostream& os, const basic_vector& bv)
