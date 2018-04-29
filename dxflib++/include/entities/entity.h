@@ -90,6 +90,7 @@ namespace dxflib::entities
 		const std::string& get_handle() const { return handle_; } // Returns the entity handle
 		const std::string& get_soft_pointer() const { return soft_pointer_; } // Returns the entity soft pointer
 		const std::string& get_layer() const { return layer_; } // Returns the entity layer
+		std::string get_layer() { return layer_; }
 		const utilities::color& get_color() const { return color_; }
 
 	protected:
