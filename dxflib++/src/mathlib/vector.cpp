@@ -115,10 +115,12 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 			continue;
 		if (line[0].x < v.x && line[1].x < v.x && !in_arc) // Line is to the right
 			continue;
+		if (in_arc && line.get_bulge() < 0)
+			continue;
 
 		const basic_vector x_unit_vector{1, 0, 0}; // Unit vector in the x direction
 		const double cp{basic_vector::cross_product(x_unit_vector, line_vector).z()};
-		if (cp <= 0) // downcrossing
+		if (cp < 0) // downcrossing
 			sum -= 1;
 		else        // upcrossing
 			sum += 1;
@@ -134,11 +136,15 @@ bool dxflib::mathlib::is_within_arc(const entities::vertex& p1, const entities::
 	const basic_vector p2_p{p2, p};
 	const basic_vector p2_p1{p2, p1};
 
-	const double phi_1{basic_vector::dot_product(p1_p, p1_p2) / (p1_p.magnitude() * p1_p2.magnitude())};
-	const double phi_2{basic_vector::dot_product(p2_p, p2_p1) / (p2_p.magnitude() * p2_p1.magnitude())};
+	const double phi_1{acos(basic_vector::dot_product(p1_p, p1_p2) / (p1_p.magnitude() * p1_p2.magnitude()))};
+	const double phi_2{acos(basic_vector::dot_product(p2_p, p2_p1) / (p2_p.magnitude() * p2_p1.magnitude()))};
 
 	const double sum{phi_1 + phi_2};
-	return sum > 0 && sum < abs(total_angle / 2);
+	const double bulge{ tan(total_angle / 4) };
+	if (basic_vector::cross_product(p1_p, p1_p2).z()*bulge < 0)
+		return false;
+
+	return sum < abs(total_angle) / 2;
 }
 
 std::ostream& dxflib::mathlib::operator<<(std::ostream& os, const basic_vector& bv)
