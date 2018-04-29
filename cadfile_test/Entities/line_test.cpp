@@ -8,10 +8,9 @@ namespace entities_test
 	TEST_CLASS(line_tests)
 	{
 	public:
-
+		inline static dxflib::cadfile test{ R"(C:\Dev\Test_DXF_files\Line_tests\parse_test.dxf)" };
 		TEST_METHOD(parse_test)
 		{
-			dxflib::cadfile test{ R"(C:\Dev\Test_DXF_files\Line_tests\parse_test.dxf)" };
 			const dxflib::entities::line& test_line = test.get_lines()[0];
 
 			// Getting line from vector as a const ref
@@ -26,9 +25,14 @@ namespace entities_test
 
 			// Layer
 			Assert::AreEqual("test_layer", test_line.get_layer().c_str());
+		}
+
+		TEST_METHOD(geometric_test)
+		{
+			const auto& test_line = test.get_lines()[0];
 
 			// Length
-			Assert::AreEqual()
+			Assert::AreEqual(500.000, test_line.get_length(), 0.001);
 		}
 	};
 }
