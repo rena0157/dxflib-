@@ -3,7 +3,7 @@
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-namespace entities_test
+namespace entity_tests
 {
 	TEST_CLASS(line_tests)
 	{
