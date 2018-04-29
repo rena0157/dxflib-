@@ -20,6 +20,11 @@ bool dxflib::entities::vertex::within(const lwpolyline& pl) const
 	return mathlib::winding_num(pl.get_lines(), *this);
 }
 
+bool dxflib::entities::vertex::operator==(const vertex& other) const
+{
+	return other.x == x && other.y == y && other.z == z;
+}
+
 std::ostream& dxflib::entities::operator<<(std::ostream& os, const point_base pb)
 {
 	os << "[" << pb.x << ", " << pb.y << ", " << pb.z << "]";
