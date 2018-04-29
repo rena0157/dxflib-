@@ -122,6 +122,21 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 	return sum;
 }
 
+bool dxflib::mathlib::is_within_arc(const entities::vertex& p1, const entities::vertex& p, const entities::vertex& p2,
+                                    const double total_angle)
+{
+	const basic_vector p1_p{p1, p};
+	const basic_vector p1_p2{p1, p2};
+	const basic_vector p2_p{p2, p};
+	const basic_vector p2_p1{p2, p1};
+
+	const double phi_1{basic_vector::dot_product(p1_p, p1_p2) / (p1_p.magnitude() * p1_p2.magnitude())};
+	const double phi_2{basic_vector::dot_product(p2_p, p2_p1) / (p2_p.magnitude() * p2_p1.magnitude())};
+
+	const double sum{phi_1 + phi_2};
+	return sum > 0 && sum < total_angle / 2;
+}
+
 std::ostream& dxflib::mathlib::operator<<(std::ostream& os, const basic_vector& bv)
 {
 	os << "[" << bv.x() << "i, " << bv.y() << "j, " << bv.z() << "k]";
