@@ -58,6 +58,7 @@ namespace dxflib::entities
 		void move_vertex(int id, const vertex& new_vertex); // sets the vertex given by id to new location
 		double get_thickness() const { return thickness_; } // Returns the thickness of the line
 		lwpolyline to_lwpolyline() const; // Converts line to a lwpolyline
+		double get_length() const { return length_; } // Returns the length of the line
 	private:
 		// Properties
 		vertex v0_; // Starting Vertex
