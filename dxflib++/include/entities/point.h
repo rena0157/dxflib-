@@ -1,9 +1,10 @@
 #pragma once
 #include <ostream>
-
+#include <vector>
 namespace dxflib::entities
 {
 	class lwpolyline;
+	class geoline;
 	/**
 	* \brief point base class
 	*/
@@ -29,5 +30,6 @@ namespace dxflib::entities
 		*/
 		explicit vertex(double x = 0, double y = 0, double z = 0);
 		bool within(const lwpolyline& pl) const;
+		bool within(const std::vector<geoline>& gl_vector) const;
 	};
 }

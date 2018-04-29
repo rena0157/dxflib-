@@ -225,7 +225,8 @@ bool dxflib::entities::hatch::within(const vertex& v) const
 	{
 		if (!polyline_ptr_->is_closed())
 			return false;
-		return polyline_ptr_->within(v);
+		// TODO: Adam: rewrite the hatch within function
+		// return polyline_ptr_->within(v);
 	}
 	return mathlib::winding_num(geolines_, v);
 }

@@ -200,11 +200,46 @@ void dxflib::entities::lwpolyline::move_vertex(const int id, const vertex& new_v
 	calc_geometry();
 }
 
-bool dxflib::entities::lwpolyline::within(const vertex& v) const
+bool dxflib::entities::lwpolyline::within(const lwpolyline& pl)
 {
-	if (!is_closed_)
+	// A polyline cannot be within itself and the pl must be closed
+	if (&pl == this || !pl.is_closed())
 		return false;
-	return mathlib::winding_num(lines_, v) != 0;
+
+	// If this object is known to be inside then return true
+	if (&pl == within_pointer_)
+		return true;
+
+	int points_within{ 0 }; // Number of points within the boundary
+	int total_points{ 0 };
+	for (const auto& line : lines_)
+	{
+		if (line[0].within(pl))
+			points_within++;
+		total_points++;
+	}
+
+	// If the contender "pl" is within the current within object
+	// then within precedence is used. Within_pointer is then changed
+	if (within_pointer_ != nullptr)
+	{
+		int test_points_within{ 0 };
+		int test_total_points{ 0 };
+		for (const auto& line : pl.get_lines())
+		{
+			if (line[0].within(*within_pointer_))
+				test_points_within++;
+			test_total_points++;
+		}
+		if (test_points_within == test_total_points)
+			within_pointer_ = &pl;
+	}
+
+	// Set the within pointe to the testing pl if non exists
+	if (within_pointer_ == nullptr)
+		within_pointer_ = &pl;
+
+	return points_within == total_points;
 }
 
 void dxflib::entities::lwpolyline::calc_geometry()
