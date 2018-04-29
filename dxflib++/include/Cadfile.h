@@ -21,8 +21,7 @@ namespace dxflib
 
 		// Public Interface
 		// Lines
-		const std::vector<entities::line>& get_lines() const { return lines_; }
-		std::vector<entities::line> get_lines() { return lines_; }
+		std::vector<entities::line>& get_lines() { return lines_; }
 		// lwpolylines
 		std::vector<entities::lwpolyline>& get_lwpolylines() { return lwpolylines_; }
 		// hatches
