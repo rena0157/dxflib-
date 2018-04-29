@@ -185,10 +185,6 @@ void dxflib::cadfile::linker()
 {
 	for (auto& hatch : hatches_)
 	{
-		// If the hatch is explicitly not associated with a polyline then
-		// dont bother searching
-		if (!hatch.is_associated())
-			continue;
 		for (auto& polyline : lwpolylines_)
 		{
 			if (hatch.get_soft_pointer() == polyline.get_handle())

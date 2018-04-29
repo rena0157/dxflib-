@@ -108,8 +108,7 @@ namespace dxflib::entities
 		double get_length() const { return length_; } // Returns the length of the lwpolyline
 		double get_area() const { return area_; } // Returns the area of the lwpolyline
 		double is_drawn_ccw() const { return drawn_counter_clockwise_; }
-		// Returns true if the polyline was drawn counterclock-wise
-
+		const lwpolyline* get_within_pointer() const { return within_pointer_; }
 		// Set
 		void set_elevation(const double new_elevation) // Sets the elevation of the lwpolyline
 		{
@@ -119,7 +118,7 @@ namespace dxflib::entities
 		void move_vertex(int id, const vertex& new_vertex); // Moves the vertex[id] to new location
 
 		// Other functions
-		bool within(const vertex& v) const;
+		bool within(const lwpolyline& pl);
 		friend std::ostream& operator<<(std::ostream& os, lwpolyline);
 
 	private:
@@ -134,6 +133,8 @@ namespace dxflib::entities
 		double length_{}; // total length of the polyline
 		double area_{}; // Total area of the polyline
 		bool drawn_counter_clockwise_{};
+
+		const lwpolyline* within_pointer_{ nullptr };
 
 		/**
 		 * \brief Function that calculates the total length & area of the polyline
