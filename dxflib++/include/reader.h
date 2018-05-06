@@ -12,6 +12,7 @@ namespace dxflib::utilities
 
 		// Publib Interface
 		bool is_binary() const { return is_binary_; }
+		int get_file_size() const { return static_cast<int>(file_size_); }
 
 	private:
 		std::string path_;
