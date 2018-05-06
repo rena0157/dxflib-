@@ -152,11 +152,13 @@
     <ClInclude Include="include\entities\point.h" />
     <ClInclude Include="include\entities\text.h" />
     <ClInclude Include="include\mathlib.h" />
+    <ClInclude Include="include\reader.h" />
     <ClInclude Include="include\utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cadfile.cpp" />
     <ClCompile Include="src\entities\arc.cpp" />
+    <ClCompile Include="src\entities\dxf_reader.cpp" />
     <ClCompile Include="src\entities\entitiy.cpp" />
     <ClCompile Include="src\entities\hatch.cpp" />
     <ClCompile Include="src\entities\line.cpp" />

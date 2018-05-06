@@ -13,7 +13,7 @@
  */
 dxflib::cadfile::cadfile(const char* path) : filename_(path)
 {
-	read_file();
+	read_ascii();
 	parse_data();
 	linker();
 }
@@ -22,7 +22,7 @@ dxflib::cadfile::cadfile(const char* path) : filename_(path)
 /**
  * \brief Reads the Dxf File
  */
-void dxflib::cadfile::read_file()
+void dxflib::cadfile::read_ascii()
 {
 	std::ifstream fs;
 
