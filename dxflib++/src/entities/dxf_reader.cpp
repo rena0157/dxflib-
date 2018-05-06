@@ -2,7 +2,7 @@
 #include <string>
 
 dxflib::utilities::dxf_reader::dxf_reader(const char* path):
-	path_(path), is_binary_(false)
+	binary_data_(nullptr), path_(path), is_binary_(false)
 {
 	// Open the DXF file and read in 22 bytes of data to check if the file is
 	// Binary or not
@@ -27,7 +27,11 @@ dxflib::utilities::dxf_reader::dxf_reader(const char* path):
 
 dxflib::utilities::dxf_reader::~dxf_reader()
 {
-	delete[] binary_data_;
+	// Only delete data if the file is a binary file 
+	if (is_binary_)
+	{
+		delete[] binary_data_;
+	}
 	binary_data_ = nullptr;
 }
 
