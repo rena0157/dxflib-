@@ -49,7 +49,7 @@ char* dxflib::utilities::dxf_reader::binary_reader()
 	if (!is_binary_)
 		throw reader_error("Trying to read a ascii file with the binary reader");
 	// Allocate Memory
-	char* binary_data = new char[file_size_];
+	auto* binary_data = new char[file_size_];
 	// Read file into memory
 	dxf_file_.read(binary_data, file_size_);
 }
