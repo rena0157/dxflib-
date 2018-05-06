@@ -17,7 +17,9 @@ namespace dxflib::utilities
 	class dxf_reader
 	{
 	public:
+		// Constructors
 		explicit dxf_reader(const char* path);
+		~dxf_reader();
 		static constexpr int sentenial_size{22};
 		inline static const char* sentenial = "AutoCAD Binary DXF\x0d\x0a\x1a\x00";
 
@@ -30,7 +32,7 @@ namespace dxflib::utilities
 		char* binary_reader();
 
 	private:
-
+		char* binary_data_;
 		std::string path_;
 		std::ifstream dxf_file_;
 		bool is_binary_;

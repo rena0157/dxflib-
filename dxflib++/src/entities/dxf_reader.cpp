@@ -25,6 +25,12 @@ dxflib::utilities::dxf_reader::dxf_reader(const char* path):
 	data = nullptr;
 }
 
+dxflib::utilities::dxf_reader::~dxf_reader()
+{
+	delete[] binary_data_;
+	binary_data_ = nullptr;
+}
+
 std::vector<std::string> dxflib::utilities::dxf_reader::ascii_reader()
 {
 	// Throw exception if using the wrong reader
@@ -49,7 +55,8 @@ char* dxflib::utilities::dxf_reader::binary_reader()
 	if (!is_binary_)
 		throw reader_error("Trying to read a ascii file with the binary reader");
 	// Allocate Memory
-	auto* binary_data = new char[file_size_];
+	binary_data_ = new char[file_size_];
 	// Read file into memory
-	dxf_file_.read(binary_data, file_size_);
+	dxf_file_.read(binary_data_, file_size_);
+	return binary_data_;
 }
