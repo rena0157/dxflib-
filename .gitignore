@@ -267,3 +267,4 @@ paket-files/
 __pycache__/
 *.pyc
 /enc_temp_folder/c75f41822a16d8f7247a2a692f8213d/cadfile.cpp
+/group_code_types.xlsx
