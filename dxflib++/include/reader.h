@@ -29,13 +29,14 @@ namespace dxflib::utilities
 
 		// Readers
 		std::vector<std::string> ascii_reader();
-		char* binary_reader();
+		void binary_reader();
+		void get_data(char* destination, size_t* start, size_t num_bytes) const;
 
 	private:
-		char* binary_data_;
 		std::string path_;
 		std::ifstream dxf_file_;
 		bool is_binary_;
 		std::size_t file_size_;
+		char* bin_data_;
 	};
 }

@@ -2,7 +2,7 @@
 #include <string>
 
 dxflib::utilities::dxf_reader::dxf_reader(const char* path):
-	binary_data_(nullptr), path_(path), is_binary_(false)
+	path_(path), is_binary_(false), bin_data_(nullptr)
 {
 	// Open the DXF file and read in 22 bytes of data to check if the file is
 	// Binary or not
@@ -27,13 +27,13 @@ dxflib::utilities::dxf_reader::dxf_reader(const char* path):
 
 dxflib::utilities::dxf_reader::~dxf_reader()
 {
-	// Only delete data if the file is a binary file 
 	if (is_binary_)
 	{
-		delete[] binary_data_;
+		delete[] bin_data_;
+		bin_data_ = nullptr;
 	}
-	binary_data_ = nullptr;
 }
+
 
 std::vector<std::string> dxflib::utilities::dxf_reader::ascii_reader()
 {
@@ -53,14 +53,30 @@ std::vector<std::string> dxflib::utilities::dxf_reader::ascii_reader()
 	return ascii_data;
 }
 
-char* dxflib::utilities::dxf_reader::binary_reader()
+void dxflib::utilities::dxf_reader::binary_reader()
 {
 	// Throw exception if using the wrong reader
 	if (!is_binary_)
 		throw reader_error("Trying to read a ascii file with the binary reader");
-	// Allocate Memory
-	binary_data_ = new char[file_size_];
 	// Read file into memory
-	dxf_file_.read(binary_data_, file_size_);
-	return binary_data_;
+	bin_data_ = new char[file_size_];
+	dxf_file_.read(bin_data_, file_size_);
+}
+
+void dxflib::utilities::dxf_reader::get_data(char* destination, size_t* start, size_t num_bytes) const
+{
+	// The starting point cannot be a null pointer
+	if (start == nullptr)
+		throw reader_error("Start cannot be a null pointer");
+
+	// if the starting point plus the number of bytes is greater than the file size then
+	// There should be an error
+	if (*start + num_bytes > file_size_)
+		throw reader_error("access data error - index error");
+	size_t buf_pos{ 0 };
+
+	// Iterate through the data array and extract data into the buffer
+	for (size_t data_pos{0}; data_pos < *start + num_bytes; ++data_pos)
+		destination[buf_pos++] = bin_data_[data_pos];
+	*start = num_bytes - 1; // move the pointer
 }

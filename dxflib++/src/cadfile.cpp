@@ -4,17 +4,22 @@
 #include "dxflib++/include/entities/lwpolyline.h"
 #include "dxflib++/include/entities/text.h"
 #include "dxflib++/include/entities/arc.h"
-#include <fstream>
 #include <string>
 
 /**
  * \brief cadfile Constructor
  * \param path Path to the DXF file
  */
-dxflib::cadfile::cadfile(const char* path) : filename_(path)
+dxflib::cadfile::cadfile(const char* path) : filename_(path), 
+	dxf_reader_(filename_)
 {
-	read_ascii();
-	parse_data();
+	read_file();
+
+	if (!dxf_reader_.is_binary())
+		ascii_parser();
+	else
+		binary_parser();
+
 	linker();
 }
 
@@ -22,36 +27,23 @@ dxflib::cadfile::cadfile(const char* path) : filename_(path)
 /**
  * \brief Reads the Dxf File
  */
-void dxflib::cadfile::read_ascii()
+void dxflib::cadfile::read_file()
 {
-	std::ifstream fs;
-
-	fs.open(filename_);
-	if (fs.good())
+	// Read the dxf file with the appropriate reader
+	if (!dxf_reader_.is_binary())
 	{
-		// Preallocating memory
-		fs.seekg(0, std::istream::end);
-		const size_t size{static_cast<size_t>(fs.tellg()) / sizeof(int64_t)};
-		fs.seekg(0, std::istream::beg);
-		data_.reserve(size);
-		// get data
-		for (std::string line; std::getline(fs, line);)
-		{
-			data_.push_back(std::move(line));
-		}
-		fs.close();
+		ascii_data_ = dxf_reader_.ascii_reader();
 	}
 	else
 	{
-		fs.close();
-		throw std::ios::failure("File failed to open/read/close");
+		dxf_reader_.binary_reader();
 	}
 }
 
 /**
  * \brief Parses data in the dxf file
  */
-void dxflib::cadfile::parse_data()
+void dxflib::cadfile::ascii_parser()
 {
 	// Loop Variables
 	entities::entity_types current_entity{entities::entity_types::line}; // Current Entity
@@ -66,10 +58,10 @@ void dxflib::cadfile::parse_data()
 	entities::text_buffer tb;        // Text Buffer
 	entities::arc_buffer ab;
 
-	for (int linenum{0}; linenum < static_cast<int>(data_.size()) - 1; ++linenum)
+	for (int linenum{0}; linenum < static_cast<int>(ascii_data_.size()) - 1; ++linenum)
 	{
-		std::string& cl = data_[linenum];     // The Current line in the data vector
-		std::string& nl = data_[linenum + 1]; // The Next line in the data vector
+		std::string& cl = ascii_data_[linenum];     // The Current line in the data vector
+		std::string& nl = ascii_data_[linenum + 1]; // The Next line in the data vector
 		/*
 		 * Assignment Path - First the current entity must be selected from a start marker found
 		 * if the DXF file. When the Start marker is found then the extraction flag is set to true
@@ -177,6 +169,45 @@ void dxflib::cadfile::parse_data()
 				break;
 			}
 		}
+	}
+}
+
+void dxflib::cadfile::binary_parser()
+{
+	entities::entity_types current_entity;
+	bool extraction_flag{ false };
+	char* data_buffer;
+	group_codes::bin_code_t code_type;
+	for (size_t pos{0}; pos < dxf_reader_.get_file_size();)
+	{
+		dxf_reader_.get_data(data_buffer, &pos, 2);
+		const int16_t current_gcode = *reinterpret_cast<int16_t*>(data_buffer);
+
+		if (current_gcode >= 0 && current_gcode <= 9)
+		{
+			code_type = group_codes::bin_code_t::string_t;
+		}
+		else if (current_gcode >= 10 && current_gcode <= 59)
+		{
+			code_type = group_codes::bin_code_t::double_t;
+		}
+		else if (current_gcode >= 60 && current_gcode <= 99)
+		{
+			code_type = group_codes::bin_code_t::int_32;
+		}
+
+
+		switch (code_type)
+		{
+		case group_codes::bin_code_t::string_t:
+			break;
+		case group_codes::bin_code_t::double_t:
+			/*delete[] data_buffer;
+			data_buffer = new char[8];
+			dxf_reader_.get_data(data_buffer, &pos, 8);*/
+			break;
+		}
+
 	}
 }
 

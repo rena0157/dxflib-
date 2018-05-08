@@ -4,6 +4,7 @@
 #include "entities/hatch.h"
 #include "entities/text.h"
 #include <vector>
+#include "reader.h"
 
 namespace dxflib
 {
@@ -33,7 +34,7 @@ namespace dxflib
 		// Filename of the DXF file
 		std::string get_filename() const { return std::string{filename_}; }
 		// DXF Data
-		const std::vector<std::string>& get_data() const { return data_; }
+		const std::vector<std::string>& get_data() const { return ascii_data_; }
 
 	private:
 		// Entities
@@ -43,13 +44,15 @@ namespace dxflib
 		std::vector<entities::text> basic_text_; // TEXT Entities
 		std::vector<entities::arc> arcs_; // ARC Entities
 
-		void read_ascii();  // Reads the file that is stored in filename_
-		void read_binary(); // Reads the binary file that is stored in filename
-		void parse_data(); // Main parse function for the dxf file: iterates through the data_ vector and
+		const char* filename_; // Path to the DXF file
+		utilities::dxf_reader dxf_reader_;
+		void read_file();
+		
+		void ascii_parser(); // Main parse function for the dxf file: iterates through the data_ vector and
+		void binary_parser();
 		void linker(); // Links entities to other entities, noteably hatches and polyline
 
-		const char* filename_; // Path to the DXF file
-		std::vector<std::string> data_; // raw data from the dxf file
+		std::vector<std::string> ascii_data_; // ascii data from dxf file
 	};
 
 	// Group Codes
@@ -74,6 +77,13 @@ namespace dxflib
 			const char* text{"TEXT"};
 			const char* mtext{"MTEXT"};
 			const char* arc{ "ARC" };
+		};
+
+		enum class bin_code_t
+		{
+			string_t,
+			double_t,
+			int_32
 		};
 	}
 }
