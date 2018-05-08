@@ -5,6 +5,7 @@
 #include "dxflib++/include/entities/text.h"
 #include "dxflib++/include/entities/arc.h"
 #include <string>
+#include <memory>
 
 /**
  * \brief cadfile Constructor
@@ -176,22 +177,22 @@ void dxflib::cadfile::binary_parser()
 {
 	entities::entity_types current_entity;
 	bool extraction_flag{ false };
-	char* data_buffer;
 	group_codes::bin_code_t code_type;
 	for (size_t pos{0}; pos < dxf_reader_.get_file_size();)
 	{
+		auto data_buffer = std::make_unique<char>();
 		dxf_reader_.get_data(data_buffer, &pos, 2);
-		const int16_t current_gcode = *reinterpret_cast<int16_t*>(data_buffer);
+		const int16_t* current_gcode = reinterpret_cast<int16_t*>(data_buffer);
 
-		if (current_gcode >= 0 && current_gcode <= 9)
+		if (*current_gcode >= 0 && *current_gcode <= 9)
 		{
 			code_type = group_codes::bin_code_t::string_t;
 		}
-		else if (current_gcode >= 10 && current_gcode <= 59)
+		else if (*current_gcode >= 10 && *current_gcode <= 59)
 		{
 			code_type = group_codes::bin_code_t::double_t;
 		}
-		else if (current_gcode >= 60 && current_gcode <= 99)
+		else if (*current_gcode >= 60 && *current_gcode <= 99)
 		{
 			code_type = group_codes::bin_code_t::int_32;
 		}
@@ -207,7 +208,6 @@ void dxflib::cadfile::binary_parser()
 			dxf_reader_.get_data(data_buffer, &pos, 8);*/
 			break;
 		}
-
 	}
 }
 
