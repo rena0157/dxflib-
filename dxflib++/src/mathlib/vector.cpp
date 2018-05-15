@@ -105,14 +105,19 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 	int sum{0};
 	for (const auto& line : geolines)
 	{
-		const basic_vector line_vector{line};
+		// Loop constants
+		const basic_vector line_vector{line}; // the line vector
 		bool in_arc{ false };
+
+		// if the line is an arc then test to see if it is within the arc.
 		if (line.get_bulge() != entities::geoline::bulge_null)
 			in_arc = is_within_arc(line[0], v, line[1], line.get_angle());
 		if (line[0].y > v.y && line[1].y > v.y && !in_arc) // Line is above
 			continue;
 		if (line[0].y < v.y && line[1].y < v.y && !in_arc) // Line is below
 			continue;
+
+		// Bug: Line could still be right of point and this will not flag it
 		if (line[0].x < v.x && line[1].x < v.x && !in_arc) // Line is to the right
 			continue;
 		if (in_arc && line.get_bulge() < 0)
