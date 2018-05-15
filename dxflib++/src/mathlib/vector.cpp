@@ -129,7 +129,7 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 		const double x_unit_vector_cross_l0_l1{basic_vector::cross_product(x_unit_vector, l0_l1).z()};
 
 		/*
-		 * There is a special case where the point is to the left of the line but is no left of both
+		 * There is a special case where the point is to the left of the line but is not left of both
 		 * points of the line. To determine if the point is in this condition we need to compare the two cross
 		 * products that we calculated above. The signs will differ if 
 		 */
