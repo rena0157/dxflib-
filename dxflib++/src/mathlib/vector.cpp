@@ -106,26 +106,37 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 	for (const auto& line : geolines)
 	{
 		// Loop constants
-		const basic_vector line_vector{line}; // the line vector
+		const basic_vector l0_l1{line}; // vector from v0 to v1 of the geoline
 		bool in_arc{ false };
 
-		// if the line is an arc then test to see if it is within the arc.
+		// if the line is an arc then test to see if the point is within the arc segments zone of influence
 		if (line.get_bulge() != entities::geoline::bulge_null)
 			in_arc = is_within_arc(line[0], v, line[1], line.get_angle());
 		if (line[0].y > v.y && line[1].y > v.y && !in_arc) // Line is above
 			continue;
 		if (line[0].y < v.y && line[1].y < v.y && !in_arc) // Line is below
 			continue;
-
-		// Bug: Line could still be right of point and this will not flag it
 		if (line[0].x < v.x && line[1].x < v.x && !in_arc) // Line is to the right
 			continue;
 		if (in_arc && line.get_bulge() < 0)
 			continue;
 
+		// Vectors
+		const basic_vector l0_v{ line[0], v };
+		const double l0_l1_x_l0_v{ basic_vector::cross_product(l0_l1, l0_v).z() };
+
 		const basic_vector x_unit_vector{1, 0, 0}; // Unit vector in the x direction
-		const double cp{basic_vector::cross_product(x_unit_vector, line_vector).z()};
-		if (cp < 0) // downcrossing
+		const double x_unit_vector_cross_l0_l1{basic_vector::cross_product(x_unit_vector, l0_l1).z()};
+
+		/*
+		 * There is a special case where the point is to the left of the line but is no left of both
+		 * points of the line. To determine if the point is in this condition we need to compare the two cross
+		 * products that we calculated above. The signs will differ if 
+		 */
+		if (l0_l1_x_l0_v*x_unit_vector_cross_l0_l1 < 0 && !in_arc && line.get_bulge() < 0)
+			continue;
+		
+		if (x_unit_vector_cross_l0_l1 < 0) // downcrossing
 			sum -= 1;
 		else        // upcrossing
 			sum += 1;
