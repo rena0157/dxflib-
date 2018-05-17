@@ -147,6 +147,12 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 bool dxflib::mathlib::is_within_arc(const entities::vertex& p1, const entities::vertex& p, const entities::vertex& p2,
                                     const double total_angle)
 {
+	// TODO: add comment about how this works
+	/*
+	 * Is within arc function:
+	 *  
+	 */
+
 	const basic_vector p1_p{p1, p};
 	const basic_vector p1_p2{p1, p2};
 	const basic_vector p2_p{p2, p};
