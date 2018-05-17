@@ -86,7 +86,7 @@ inline double dxflib::entities::geoline::get_radius() const
 	return bulge_ == static_cast<double>(bulge_null) ? std::numeric_limits<double>::infinity() : radius_;
 }
 
-inline double dxflib::entities::geoline::get_angle() const
+double dxflib::entities::geoline::get_angle() const
 {
 	return bulge_ == static_cast<double>(bulge_null) ? std::numeric_limits<double>::infinity() : total_angle_;
 }

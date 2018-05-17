@@ -31,7 +31,7 @@ namespace dxflib::entities
 		double get_bulge() const { return bulge_; } // Returns the bulge of the geoline
 		double get_area() const { return area_; } // Returns the area between the geoline and the x-axis
 		inline double get_radius() const; // Returns the radius of the geoline: INF if bulge == bulge_null
-		inline double get_angle() const; // Returns the angle of the geoline: INF if bulge == bulge_null
+		double get_angle() const; // Returns the angle of the geoline: INF if bulge == bulge_null
 		friend std::ostream& operator<<(std::ostream& os, geoline& geoline);
 
 	protected:

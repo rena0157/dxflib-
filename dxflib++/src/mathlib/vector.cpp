@@ -1,5 +1,6 @@
 #include "dxflib++/include/mathlib.h"
 #include "dxflib++/include/entities/lwpolyline.h"
+#include "dxflib++/include/entities/line.h"
 
 dxflib::mathlib::basic_vector::basic_vector(const entities::vertex& v0, const entities::vertex& v1):
 	v0_(v0), v1_(v1), x_(v1_.x - v0_.x), y_(v1_.y - v0_.y), z_(v1.z - v0.z), has_verticies_(true)
@@ -104,22 +105,68 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 	int sum{0};
 	for (const auto& line : geolines)
 	{
-		const basic_vector line_vector{line};
-		if (line[0].y > v.y && line[1].y > v.y) // Line is above
+		// Loop constants
+		const basic_vector l0_l1{line}; // vector from v0 to v1 of the geoline
+		bool in_arc{ false };
+
+		// if the line is an arc then test to see if the point is within the arc segments zone of influence
+		if (line.get_bulge() != entities::geoline::bulge_null)
+			in_arc = is_within_arc(line[0], v, line[1], line.get_angle());
+		if (line[0].y > v.y && line[1].y > v.y && !in_arc) // Line is above
 			continue;
-		if (line[0].y < v.y && line[1].y < v.y) // Line is below
+		if (line[0].y < v.y && line[1].y < v.y && !in_arc) // Line is below
 			continue;
-		if (line[0].x < v.x && line[1].x < v.x) // Line is to the right
+		if (line[0].x < v.x && line[1].x < v.x && !in_arc) // Line is to the right
+			continue;
+		if (in_arc && line.get_bulge() < 0)
 			continue;
 
+		// Vectors
+		const basic_vector l0_v{ line[0], v };
+		const double l0_l1_x_l0_v{ basic_vector::cross_product(l0_l1, l0_v).z() };
+
 		const basic_vector x_unit_vector{1, 0, 0}; // Unit vector in the x direction
-		const double cp{basic_vector::cross_product(x_unit_vector, line_vector).z()};
-		if (cp <= 0) // downcrossing
+		const double x_unit_vector_cross_l0_l1{basic_vector::cross_product(x_unit_vector, l0_l1).z()};
+
+		/*
+		 * There is a special case where the point is to the left of the line but is not left of both
+		 * points of the line. To determine if the point is in this condition we need to compare the two cross
+		 * products that we calculated above. The signs will differ if 
+		 */
+		if (l0_l1_x_l0_v*x_unit_vector_cross_l0_l1 < 0 && !in_arc && line.get_bulge() < 0)
+			continue;
+		
+		if (x_unit_vector_cross_l0_l1 < 0) // downcrossing
 			sum -= 1;
 		else        // upcrossing
 			sum += 1;
 	}
 	return sum;
+}
+
+bool dxflib::mathlib::is_within_arc(const entities::vertex& p1, const entities::vertex& p, const entities::vertex& p2,
+                                    const double total_angle)
+{
+	// TODO: add comment about how this works
+	/*
+	 * Is within arc function:
+	 *  
+	 */
+
+	const basic_vector p1_p{p1, p};
+	const basic_vector p1_p2{p1, p2};
+	const basic_vector p2_p{p2, p};
+	const basic_vector p2_p1{p2, p1};
+
+	const double phi_1{acos(basic_vector::dot_product(p1_p, p1_p2) / (p1_p.magnitude() * p1_p2.magnitude()))};
+	const double phi_2{acos(basic_vector::dot_product(p2_p, p2_p1) / (p2_p.magnitude() * p2_p1.magnitude()))};
+
+	const double sum{phi_1 + phi_2};
+	const double bulge{ tan(total_angle / 4) };
+	if (basic_vector::cross_product(p1_p, p1_p2).z()*bulge < 0)
+		return false;
+
+	return sum < abs(total_angle) / 2;
 }
 
 std::ostream& dxflib::mathlib::operator<<(std::ostream& os, const basic_vector& bv)

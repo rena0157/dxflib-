@@ -162,5 +162,14 @@ namespace dxflib::mathlib
 		bool has_verticies_;
 	};
 
+	/**
+	 * \brief Computes the winding number of a vertex and a closed set of geolines
+	 * \param geolines input a vector of geolines that surroud the point in question
+	 * \param v the vertex in question
+	 * \return the winding number. 
+	 */
 	int winding_num(const std::vector<entities::geoline>& geolines, const entities::vertex& v);
+
+	bool is_within_arc(const entities::vertex& p1, const entities::vertex& p,
+	                   const entities::vertex& p2, double total_angle);
 }
