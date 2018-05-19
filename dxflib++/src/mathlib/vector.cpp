@@ -103,6 +103,7 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 	 */
 
 	int sum{0};
+	bool is_ccw{ entities::geoline::draw_direction(geolines[0], geolines[1]) > 0 };
 	for (const auto& line : geolines)
 	{
 		// Loop constants
@@ -118,8 +119,10 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 			continue;
 		if (line[0].x < v.x && line[1].x < v.x && !in_arc) // Line is to the right
 			continue;
-		if (in_arc && line.get_bulge() < 0)
-			continue;
+
+		bool is_convex{ false };
+		if ((is_ccw && line.get_bulge() > 0) || (!is_ccw && line.get_bulge() < 0))
+			is_convex = true;
 
 		// Vectors
 		const basic_vector l0_v{ line[0], v };
@@ -133,7 +136,14 @@ int dxflib::mathlib::winding_num(const std::vector<entities::geoline>& geolines,
 		 * points of the line. To determine if the point is in this condition we need to compare the two cross
 		 * products that we calculated above. The signs will differ if 
 		 */
-		if (l0_l1_x_l0_v*x_unit_vector_cross_l0_l1 < 0 && !in_arc && line.get_bulge() < 0)
+		// Line is to the right and the point is not within an arc and meets the special condition above
+		if (l0_l1_x_l0_v*x_unit_vector_cross_l0_l1 < 0 && !in_arc)
+			continue;
+		// Line is to the right and point is within a concave arc
+		if (l0_l1_x_l0_v*x_unit_vector_cross_l0_l1 > 0 && in_arc && !is_convex)
+			continue;
+		// Line is to the left and the point is within a convex arc
+		if (l0_l1_x_l0_v*x_unit_vector_cross_l0_l1 > 0 && in_arc && is_convex)
 			continue;
 		
 		if (x_unit_vector_cross_l0_l1 < 0) // downcrossing

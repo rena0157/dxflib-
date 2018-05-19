@@ -6,12 +6,12 @@ dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const dou
 	v0_(v0), v1_(v1),
 	bulge_(bulge)
 {
-	if (bulge_ == bulge_null)
+	if (bulge_ == bulge_null) // If segment is a straight line
 	{
 		length_ = mathlib::distance(v0_, v1_);
 		area_ = mathlib::trapz_area(v0_, v1_);
 	}
-	else
+	else // If segment is not a straight line
 	{
 		length_ = mathlib::distance(v0_, v1_, bulge_);
 		total_angle_ = 4 * std::atan(bulge_);
@@ -47,6 +47,17 @@ std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder
 	if (is_closed && !x.empty() && !y.empty() && !bulge.empty())
 		geolines.emplace_back(vertex{x.back(), y.back()}, vertex{x[0], y[0]}, bulge.back());
 	return geolines;
+}
+
+double dxflib::entities::geoline::draw_direction(const geoline& p0_p1, const geoline& p1_p2)
+{
+	/*
+	 * Function used to determine the draw direction of a set of geolines. This 
+	 * is useful for determining if a bulge is convex or concave
+	 */
+	const mathlib::basic_vector v0{ p0_p1 };
+	const mathlib::basic_vector v1{ p1_p2 };
+	return mathlib::basic_vector::cross_product(v0, v1).z();
 }
 
 const dxflib::entities::vertex& dxflib::entities::geoline::operator[](const int id) const
