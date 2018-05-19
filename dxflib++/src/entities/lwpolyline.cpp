@@ -49,6 +49,17 @@ std::vector<dxflib::entities::geoline> dxflib::entities::geoline::geoline_binder
 	return geolines;
 }
 
+double dxflib::entities::geoline::draw_direction(const geoline& p0_p1, const geoline& p1_p2)
+{
+	/*
+	 * Function used to determine the draw direction of a set of geolines. This 
+	 * is useful for determining if a bulge is convex or concave
+	 */
+	const mathlib::basic_vector v0{ p0_p1 };
+	const mathlib::basic_vector v1{ p1_p2 };
+	return mathlib::basic_vector::cross_product(v0, v1).z();
+}
+
 const dxflib::entities::vertex& dxflib::entities::geoline::operator[](const int id) const
 {
 	switch (id)

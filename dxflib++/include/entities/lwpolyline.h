@@ -24,6 +24,9 @@ namespace dxflib::entities
 		                                           const std::vector<double>& y, const std::vector<double>& bulge,
 		                                           bool is_closed);
 
+		// Returns the draw direction of a set of geolines
+		static double draw_direction(const geoline&, const geoline&);
+
 		// Public Interface 
 		const vertex& operator[](int id) const; // Returns a vertex of the geoline 0 or 1
 		vertex& operator[](int id); // Returns a vertex of the geoline 0 or 1
