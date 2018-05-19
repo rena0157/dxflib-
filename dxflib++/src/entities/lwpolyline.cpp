@@ -6,12 +6,12 @@ dxflib::entities::geoline::geoline(const vertex& v0, const vertex& v1, const dou
 	v0_(v0), v1_(v1),
 	bulge_(bulge)
 {
-	if (bulge_ == bulge_null)
+	if (bulge_ == bulge_null) // If segment is a straight line
 	{
 		length_ = mathlib::distance(v0_, v1_);
 		area_ = mathlib::trapz_area(v0_, v1_);
 	}
-	else
+	else // If segment is not a straight line
 	{
 		length_ = mathlib::distance(v0_, v1_, bulge_);
 		total_angle_ = 4 * std::atan(bulge_);
