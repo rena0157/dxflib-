@@ -1,5 +1,7 @@
 ## DxfLib++ - An AutoCAD DXF Library
 
+Work on this project has not moved over to a new project: [https://github.com/rena0157/Dxflib](https://github.com/rena0157/Dxflib)
+
 ````
 dxflib::cadfile c_file{"Path.dxf"}; // Load file
 
